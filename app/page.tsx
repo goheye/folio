@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { BookOpen, Camera, ChevronRight, Feather, Home, LogOut, Mail, Sparkles, UserRound } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { BookOpen, Camera, ChevronRight, Feather, Home, LogOut, Mail, Sparkles, UserRound, X } from 'lucide-react';
 
 type SectionId = 'home' | 'scripts' | 'images' | 'inspiration' | 'about';
 type Script = { title: string; type: string; year: string; logline: string; excerpt: string };
@@ -53,6 +52,13 @@ export default function HomePage() {
     return () => lifecycle.abort();
   }, []);
 
+  useEffect(() => {
+    if (!selectedScript) return;
+    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && setSelectedScript(null);
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [selectedScript]);
+
   return (
     <main className={`world ${entered ? 'is-entered' : ''}`}>
       <div className="ambient-light" aria-hidden="true"><i /><i /><i /><i /><i /></div>
@@ -99,19 +105,22 @@ export default function HomePage() {
         </div>
       )}
 
-      <Dialog open={Boolean(selectedScript)} onOpenChange={(open) => !open && setSelectedScript(null)}>
-        <DialogContent className="script-dialog">
-          <DialogHeader>
+      {selectedScript && (
+        <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setSelectedScript(null)}>
+          <section className="script-dialog" role="dialog" aria-modal="true" aria-labelledby="script-title">
+            <button className="dialog-close" type="button" onClick={() => setSelectedScript(null)} aria-label="关闭剧本预览"><X size={19} /></button>
+          <div className="dialog-header">
             <p className="tiny-label">SCRIPT PREVIEW · {selectedScript?.year}</p>
-            <DialogTitle>{selectedScript?.title}</DialogTitle>
-            <DialogDescription>{selectedScript?.type}</DialogDescription>
-          </DialogHeader>
+            <h2 id="script-title">{selectedScript?.title}</h2>
+            <p className="dialog-description">{selectedScript?.type}</p>
+          </div>
           <div className="dialog-rule" />
           <p className="dialog-logline">{selectedScript?.logline}</p>
           <blockquote>{selectedScript?.excerpt}</blockquote>
           <p className="dialog-note">— 节选 · 完整剧本可联系作者阅读 —</p>
-        </DialogContent>
-      </Dialog>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
