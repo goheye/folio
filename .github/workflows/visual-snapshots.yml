@@ -1,0 +1,56 @@
+name: Visual Snapshots
+
+on:
+  workflow_run:
+    workflows: [Deploy]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm install --no-save playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+
+      - name: Capture live website screens
+        env:
+          SNAPSHOT_DIR: /tmp/folio-visual-snapshots
+          SOURCE_COMMIT: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: node scripts/capture-visuals.mjs
+
+      - name: Publish text-encoded JPEGs to separate branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin visual-snapshots > /dev/null; then
+            git fetch origin visual-snapshots
+            git switch -C visual-snapshots FETCH_HEAD
+          else
+            git switch --orphan visual-snapshots
+          fi
+          mkdir -p snapshots
+          find snapshots -maxdepth 1 -name '*.b64' -type f -delete
+          cp /tmp/folio-visual-snapshots/* snapshots/
+          git add -A snapshots
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: 更新线上网站视觉快照"
+            git push origin visual-snapshots
+          fi
