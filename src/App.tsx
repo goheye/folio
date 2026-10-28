@@ -1,8 +1,15 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Clapperboard, Menu, X } from 'lucide-react';
 
 type DoodleKind = 'book' | 'film' | 'note' | 'star';
 type SceneTone = 'warm' | 'cool';
+type SectionId = 'home' | 'scripts' | 'films' | 'journal' | 'about';
+const sections: SectionId[] = ['home', 'scripts', 'films', 'journal', 'about'];
+const titles: Record<SectionId,string> = {home:'首页', scripts:'剧本创作', films:'AI 影像', journal:'创作手记',about:'关于我'};
+function currentHash(): SectionId {
+  const hash = window.location.hash.slice(1);
+  return sections.includes(hash as SectionId) ? hash as SectionId : 'home';
+}
 const navigation = [
   { label: '首页', href: '#home' },
   { label: '剧本', href: '#scripts' },
@@ -59,6 +66,23 @@ function SectionHeading({ eyebrow, title, description }: { eyebrow: string; titl
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [activeSection,setActiveSection] = useState<SectionId>(currentHash);
+  const navigate = (section: SectionId) => {
+    setActiveSection(section);
+    setMenuOpen(false);
+    window.history.pushState(null, '', '#' + section);
+    window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  };
+  const onNavigate = (section: SectionId) => (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    navigate(section);
+  };
+  useEffect(() => {
+    const sync = () => setActiveSection(currentHash());
+    window.addEventListener('popstate', sync);
+    window.addEventListener('hashchange', sync);
+    return () => {window.removeEventListener('popstate', sync);window.removeEventListener('hashchange', sync);};
+  }, []);
   useEffect(() => {
     const closeOnEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { setMenuOpen(false); setShowInfo(false); }
@@ -71,14 +95,16 @@ export default function App() {
       <a className="skip-link" href="#works">跳到作品</a>
       <div className="topline"><span>一份关于故事和画面的个人作品集</span><span>STORIES · SCRIPTS · VISUALS</span></div>
       <header className="site-header">
-        <a className="brand" href="#home" aria-label="雪雪 · 返回首页"><span className="brand-mark">雪雪<span className="brand-dot">.</span></span><span className="brand-en">XUEXUE / CREATIVE PORTFOLIO</span></a>
+        <a className="brand" href="#home" onClick={onNavigate('home')} aria-label="雪雪 · 返回首页"><span className="brand-mark">雪雪<span className="brand-dot">.</span></span><span className="brand-en">XUEXUE / CREATIVE PORTFOLIO</span></a>
         <button type="button" className="menu-toggle" aria-label={menuOpen ? '关闭导航' : '打开导航'} aria-expanded={menuOpen} aria-controls="primary-nav" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
         <nav className={'nav ' + (menuOpen ? 'nav-open' : '')} id="primary-nav" aria-label="主要导航">
-          {navigation.map(({ label, href }) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}
+          {navigation.map(({ label, href }) => <a key={href} href={href} aria-current={activeSection === href.slice(1) ? "page" : undefined} onClick={onNavigate(href.slice(1) as SectionId)}>{label}</a>)}
         </nav>
-        <a className="header-contact" href="#about">聊聊合作 <ArrowUpRight size={16} /></a>
+        <a className="header-contact" href="#about" onClick={onNavigate('about')}>聊聊合作 <ArrowUpRight size={16} /></a>
       </header>
-      <main>
+      <main className="site-main">
+        {activeSection !== "home" && <div className="stage-context section-wrap"><span>EXPLORING / 0{sections.indexOf(activeSection)+1}</span><strong>{titles[activeSection]}</strong></div>}
+        {activeSection === "home" && <div className="stage-enter" key="home">
         <section className="hero section-wrap" aria-labelledby="hero-title">
           <div className="hero-copy">
             <div className="section-number"><span className="number-line" /> HELLO, THIS IS MY CREATIVE SPACE</div>
@@ -88,7 +114,7 @@ export default function App() {
             </div>
             <p className="hero-role">编剧创作 <span className="times">×</span> AI 影像制作</p>
             <p className="hero-description">从故事的第一行字，到镜头里的每一帧。<br />在这里，记录正在发生的创作。</p>
-            <div className="hero-actions"><a className="button button-dark" href="#works">观看作品 <ArrowRight size={17} /></a><a className="button button-outline" href="#about">了解我 <ArrowUpRight size={16} /></a></div>
+            <div className="hero-actions"><a className="button button-dark" href="#works">观看作品 <ArrowRight size={17} /></a><a className="button button-outline" href="#about" onClick={onNavigate('about')}>了解我 <ArrowUpRight size={16} /></a></div>
             <div className="hero-bottom"><span className="hero-index">01 <span>/</span> 05</span><span>向下探索</span><ArrowDownRight size={18} /></div>
           </div>
           <div className="hero-media" aria-label="原创概念插画区域">
@@ -105,20 +131,20 @@ export default function App() {
         <section className="gateway section-wrap" id="works" aria-labelledby="gateway-title">
           <div className="gateway-top"><p className="eyebrow">EXPLORE MY WORK</p><h2 id="gateway-title">两个世界，一种创作。</h2><p>文字承载故事，影像让想象拥有形状。</p></div>
           <div className="gateway-grid">
-            <a className="gateway-card" href="#scripts"><div className="gateway-icon"><Doodle kind="book" size={57} /></div><div><span className="gateway-no">01 / WRITING</span><h3>剧本创作</h3><p>故事 · 人物 · 世界观</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
-            <a className="gateway-card" href="#films"><div className="gateway-icon"><Doodle kind="film" size={57} /></div><div><span className="gateway-no">02 / FILMMAKING</span><h3>AI 影像</h3><p>角色 · 分镜 · 场景</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
-            <a className="gateway-card gateway-note" href="#journal"><div className="gateway-icon"><Doodle kind="note" size={57} /></div><div><span className="gateway-no">03 / JOURNAL</span><h3>创作手记</h3><p>过程 · 灵感 · 尝试</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
+            <a className="gateway-card" href="#scripts" onClick={onNavigate('scripts')}><div className="gateway-icon"><Doodle kind="book" size={57} /></div><div><span className="gateway-no">01 / WRITING</span><h3>剧本创作</h3><p>故事 · 人物 · 世界观</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
+            <a className="gateway-card" href="#films" onClick={onNavigate('films')}><div className="gateway-icon"><Doodle kind="film" size={57} /></div><div><span className="gateway-no">02 / FILMMAKING</span><h3>AI 影像</h3><p>角色 · 分镜 · 场景</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
+            <a className="gateway-card gateway-note" href="#journal" onClick={onNavigate('journal')}><div className="gateway-icon"><Doodle kind="note" size={57} /></div><div><span className="gateway-no">03 / JOURNAL</span><h3>创作手记</h3><p>过程 · 灵感 · 尝试</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
           </div>
         </section>
 
         <section className="featured section-wrap" aria-labelledby="featured-title">
           <SectionHeading eyebrow="SELECTED WORK / 作品一览" title="从文字，到镜头。" description="这里会逐渐收录经过确认、适合公开的作品片段。现在先呈现新版的展示结构。" />
           <div className="featured-grid">
-            <a className="featured-card" href="#scripts">
+            <a className="featured-card" href="#scripts" onClick={onNavigate('scripts')}>
               <div className="featured-visual featured-script"><span className="visual-top">STORY / 001</span><div className="script-art"><span>故事还在继续</span><i /><i /><i /></div><span className="corner-stamp">SCRIPT</span></div>
               <div className="featured-meta"><div><span className="eyebrow">WRITING · 剧本</span><h3>故事的第一行</h3><p>公开节选整理中 · 展示位示意</p></div><ArrowUpRight size={23} /></div>
             </a>
-            <a className="featured-card" href="#films">
+            <a className="featured-card" href="#films" onClick={onNavigate('films')}>
               <div className="featured-visual"><SceneArt tone="cool" /><span className="visual-top visual-top-light">VISUAL / 002</span><span className="film-art-stamp"><Clapperboard size={16} /> 概念画面 / 非正式作品</span></div>
               <div className="featured-meta"><div><span className="eyebrow">VISUAL · AI 影像</span><h3>让想象进入画面</h3><p>演示片段待补充 · 展示位示意</p></div><ArrowUpRight size={23} /></div>
             </a>
@@ -126,27 +152,36 @@ export default function App() {
           <p className="privacy-hint"><span className="hint-mark">✳</span> 这里展示的插画与文字为新版样式演示，并非已公开的个人作品或可播放的视频。</p>
         </section>
 
+        </div>}
+        {activeSection === 'scripts' && <div className="stage-enter" key="scripts">
         <section className="detail-section section-wrap" id="scripts">
           <SectionHeading eyebrow="01 / SCRIPT WRITING" title="剧本，写下故事的可能。" description="故事梗概、人物关系与精选节选，会以适合阅读的方式呈现。完整剧本不在公开网站提供。" />
           <div className="detail-panel detail-script"><div className="detail-graphic"><Doodle kind="book" size={90} /><span>WORDS BECOME WORLDS</span></div><div className="detail-body"><p className="eyebrow">WRITING / COMING SOON</p><h3>作品节选正在整理</h3><p>等公开范围和稿件确认后，这里会呈现真实的剧本简介与试读内容。暂不使用未经核实的示例剧本。</p><span className="small-note">仅公开确认过的节选 · 全文私下提供</span></div></div>
         </section>
 
+        </div>}
+        {activeSection === 'films' && <div className="stage-enter" key="films">
         <section className="detail-section section-wrap" id="films">
           <SectionHeading eyebrow="02 / AI FILMMAKING" title="有些故事，想用画面来讲。" description="人物、场景、分镜与视频片段会构成影像作品档案。此处先展示新布局，不冒充正式成片。" />
           <div className="detail-panel detail-film"><div className="detail-image"><SceneArt /><span className="placeholder-tag">ILLUSTRATION PLACEHOLDER · 非作品画面</span></div><div className="detail-body"><p className="eyebrow">VISUAL / COMING SOON</p><h3>影像演示片段待上线</h3><p>后续替换为获得公开许可的真实视频、封面和制作说明。不会使用虚构片长，也不会设置无法播放的假按钮。</p><span className="small-note">只展示已确认可公开的演示内容</span></div></div>
         </section>
 
+        </div>}
+        {activeSection === 'journal' && <div className="stage-enter" key="journal">
         <section className="journal section-wrap" id="journal">
           <SectionHeading eyebrow="03 / CREATIVE PROCESS" title="一点点创作的痕迹。" description="好的故事通常不是一次就写成的。这里预留给人物设定、画面实验和制作过程。" />
           <div className="journal-grid"><div className="journal-tile"><span>01</span><Doodle kind="note" /><h3>故事的草稿</h3><p>从一个念头，慢慢长出人物与冲突。</p></div><div className="journal-tile"><span>02</span><Doodle kind="book" /><h3>角色的模样</h3><p>把想象中的人，变成可以被看见的形象。</p></div><div className="journal-tile"><span>03</span><Doodle kind="film" /><h3>镜头的尝试</h3><p>让画面与情绪找到恰当的节奏。</p></div></div>
         </section>
 
+        </div>}
+        {activeSection === 'about' && <div className="stage-enter" key="about">
         <section className="about section-wrap" id="about">
           <div className="about-intro"><p className="eyebrow">A NOTE FROM ME</p><h2>认真讲故事，<br />也认真玩创作。</h2><span className="about-doodle"><Doodle kind="star" size={50} /></span></div>
           <div className="about-copy"><p>这是一个关于剧本与 AI 影像的个人作品空间。我希望故事既能被阅读，也能以另一种方式被看见。</p><p>现阶段优先整理作品与创作过程，面向求职与合作交流。经确认的公开作品将陆续补充。</p><button className="text-action" type="button" onClick={() => setShowInfo(!showInfo)} aria-expanded={showInfo} aria-controls="contact-info">关于联系和完整作品 <ArrowRight size={17} /></button>{showInfo && <div id="contact-info" className="contact-info" role="status">完整作品可私下交流；正式联系渠道尚待确认，测试版不会展示虚构邮箱。</div>}</div>
         </section>
+        </div>}
       </main>
-      <footer className="footer section-wrap"><a className="footer-brand" href="#home">雪雪<span>.</span></a><span>STORIES ARE STILL BEING MADE.</span><a href="#home">回到顶部 ↑</a><span className="footer-doodle"><Doodle kind="film" size={42} /></span></footer>
+      <footer className="footer section-wrap"><a className="footer-brand" href="#home" onClick={onNavigate('home')}>雪雪<span>.</span></a><span>STORIES ARE STILL BEING MADE.</span><a href="#home" onClick={onNavigate('home')}>返回首页 ↑</a><span className="footer-doodle"><Doodle kind="film" size={42} /></span></footer>
     </div>
   );
 }
