@@ -26,6 +26,5 @@ push 到 `main` 自动触发 GitHub Actions：lint → 类型检查 → 构建 �
 - `src/App.tsx` — 全站唯一页面（栏目与作品数据硬编码于此）
 - `src/styles/globals.css` — 全部样式与设计 token
 - `public/forest-studio.png` — 全站背景图
-- `.zcode/skills/web-design/` — 项目级设计技能（AI 协作用）
 
 架构与设计约束详见 [AGENTS.md](./AGENTS.md)，选型背景见 [DECISIONS.md](./DECISIONS.md)。
