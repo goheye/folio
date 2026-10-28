@@ -1,36 +1,57 @@
-# 选型决策记录
+# 选型与需求决策记录
 
-> 2026-10-28 项目整理时确立。未来想推翻某条决策前，先读对应小节。
+> 不删除历史决策；若后续发生改变，标明「已被取代」并记录新决定。
+> 2026-10-28 已根据用户确认的项目边界作更正。
 
-## D1：从 vinext 服务端架构迁移到 Vite 纯静态 SPA
+## D1：由 vinext 服务端架构迁移到 Vite 纯静态 SPA
 
-**背景**：项目源自 ChatGPT Sites 生成（vinext + workerd + OpenAI 托管管道）。业务上是纯前端单页（数据硬编码、无接口路由），但背着全套服务端架构。
+**背景**：历史实现源自 ChatGPT Sites（vinext + workerd 等），业务主要为纯前端单页。
 
-**决策**：改为 Vite + React + TS + Tailwind v4 + shadcn 纯静态 SPA，GitHub Actions 部署 Cloudflare。
+**已确认保留**：Vite + React + TypeScript + Tailwind，使用静态 SPA 构建和现有部署链路。未来需要真正的后端能力时，再单独评估。
 
-**放弃的东西与回头路（损失台账）**：
+**历史损失台账**：
 
-| 放弃 | 影响 | 回头路 |
+| 放弃 | 影响 | 可以怎样扩展 |
 |---|---|---|
-| SSR/服务端渲染 | 链接预览的 meta 靠 index.html 静态写死；单页站无感 | 未来多页需独立预览时，用 Vite 多入口（MPA）模式，仍是纯静态 |
-| RSC/路由接口/middleware/D1/R2 预埋 | 需要后端功能时要重新引入 | Cloudflare 静态托管支持"静态资源 + Worker Functions"共存，届时增量加一个函数即可，非重写 |
-| ChatGPT Sites 通用脚手架 | 无（其价值绑定已弃用的 OpenAI 托管） | 替代物 = 本仓库的 AGENTS.md + 设计技能 + shadcn CLI + CI 模板 |
-| workerd 的 dev=prod 一致性 | 无 | `npm run preview` 预览的就是部署产物，一致性更强 |
+| SSR/服务端渲染 | 当前只有静态 SEO/meta | 如未来多页展示需要，可评估 Vite MPA 等 |
+| 路由 API / middleware / 数据服务预埋 | 暂无服务端处理与访问控制 | 后续可按实际需求增量添加 Cloudflare Functions 等 |
+| 旧 ChatGPT Sites 通用脚手架 | 旧托管链路不再使用 | GitHub 仓库规范 + 当前 Actions 和浏览器截图 |
+| workerd 开发时同构链路 | 需要区分本地与云环境 | `npm run preview` 可预览静态构建结果 |
 
-**整体架构兜底**：旧架构完整保留在分支 `backup/vinext-openai`（tag `backup/pre-cleanup`），随时可回。
+**回退参照**：历史原型位于 `backup/vinext-openai` 分支（含 `backup/pre-cleanup` 标签的旧记录）。需要验证存在后才能操作。
 
-## D2：React 而非 Vue
+## D2：现阶段继续使用 React
 
-用户主技术栈是 Vue。选 React 是因为 AI 协作场景下 React + Tailwind + shadcn 是模型语料最密集的组合，生成质量与效率最高。shadcn 组件是源码拷贝式，可读可改，兼作学习材料。
+保留当前 React + TypeScript 技术框架，不因视觉重设计而迁移到 Vue 或其他框架。此前选择 React 的理由属于项目历史，不限制未来讨论，但不自动触发替换。
 
-## D3：GitHub Actions 主动部署（而非 Cloudflare 直连仓库）
+## D3：GitHub Actions 部署到 Cloudflare
 
-构建过程可控、可加门禁（lint/typecheck）、密钥集中管理。代价仅是一个 workflow 文件。
+保留 `main` → lint / build → Wrangler 部署。Cloudflare API Token 和 Account ID 使用 GitHub Actions Secrets，不能写入公开代码。
 
-## D4：背景图仅在"视觉无损"前提下压缩
+## D4：初版森林背景压缩策略 —— **已被 D6 取代**
 
-forest-studio.png（2.6MB）是设计地基。允许无损或视觉不可辨的压缩；压缩后必须截图比对通过才保留，否则用原图。
+历史决定曾将 `forest-studio.png` 视为不可随意替换的“设计地基”，仅允许视觉无损压缩。
 
-## D5：去 OpenAI 化
+**该视觉前提现已失效**：当前页面只是早期原型，背景图不再被要求保留。只有在仍使用这张图进行原型比较时，才需关心该图的压缩质量。
 
-已卸载 @openai/sites-vite-plugin、删除 .openai/、移除 modelContext 注册代码、git 远端从 git.chatgpt-team.site 迁至 GitHub。原因：OpenAI Sites 托管无额度，且自建管道更可控。
+## D5：退出旧 OpenAI Sites 托管
+
+移除旧托管插件与脚手架，使用 GitHub + Cloudflare 工作流。此处指托管架构选择，不妨碍通过 ChatGPT 协作开发代码。
+
+## D6：设计从零探索，保留技术框架（2026-10-28）
+
+**用户已明确确认**：当前项目只将**代码技术基础和工作流**视为要保留的资产。页面主题、背景、配色、布局、导航、字体、动效和内容都需要重新设计。
+
+**实施方式**：
+- 不再把森林、深绿或玻璃拟态当作新设计准则。
+- 现有视觉截图只用于分析原型与未来对比，不能代表获批方案。
+- 新设计先探索不同方向、建立参考与原型；待用户确认后再正式开发。
+- 大范围改版用新分支 / PR，防止未经确认直接改变生产网站。
+
+## D7：分层保存知识，保护访谈资料（2026-10-28）
+
+- 私有层：完整用户访谈、职业经历、工具使用自评、项目细节，放在个人 Library / ChatGPT 项目文件。
+- 公开层：只放技术规范、经最小化提炼的产品约束、设计决策与协作流程。
+- 历史聊天/记忆辅助，不代替版本化知识文件。
+- 永不在公开 GitHub 保存私有访谈全文、未授权素材、密钥、完整保密剧本。
+- 需要明确区分：用户已确认 / 用户自评 / 方案建议 / 待核实 / 已否定。

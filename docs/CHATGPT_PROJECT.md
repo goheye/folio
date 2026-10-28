@@ -1,38 +1,42 @@
-# ChatGPT 项目协作入口 · 雪雪个人网站
+# ChatGPT 项目入口 · 雪雪个人网站
 
-> 此文件供 ChatGPT「雪雪个人网站」项目的后续新会话读取。它不是运行时代码，也不存放账号密码。
+> 供本 ChatGPT 项目在**任何新会话**中使用。公开版本只保存技术和最小产品规则；详细个人访谈属于私有知识，不应上传本仓库。
 
-## 唯一代码来源
+## 连接信息（固定）
 
-- GitHub: `goheye/folio`
-- 默认开发/生产分支：`main`
-- Cloudflare 生产地址：`https://folio.3303147509.workers.dev/`
-- 技术栈：Vite + React + TypeScript + Tailwind v4；Cloudflare Workers 静态资源托管
-- 已存在的项目规范：先读 `AGENTS.md`、`DECISIONS.md` 和 `README.md`，不要重复创建另一套互相矛盾的规范。
-- **第二阶段产品方案**：`docs/PRODUCT_PLAN.md`（区分用户已确认需求和待确认改版建议；未获批准不得将提案当成已定稿或已开发）。
-- 部署：`.github/workflows/deploy.yml` 在推送 `main` 后执行 lint、build 和 wrangler deploy。
+- GitHub：`goheye/folio`，主分支 `main`
+- Cloudflare：https://folio.3303147509.workers.dev/
+- 技术基础：Vite + React + TypeScript + Tailwind CSS
+- 部署：GitHub Actions（lint / build / Wrangler）→ Cloudflare Workers
+- 截图：`.github/workflows/visual-snapshots.yml` → `visual-snapshots` 分支
+- 项目历史和技术决策：`AGENTS.md`、`DECISIONS.md`
+- 公开产品状态：`docs/PRODUCT_PLAN.md`
 
-## 每次新会话的默认操作
+## 新会话启动顺序
 
-1. 通过已连接的 GitHub 查阅最新 `main` 的源代码，尤其是 `AGENTS.md`、`DECISIONS.md`、`docs/PRODUCT_PLAN.md` 和要改的文件。不要用旧对话中的代码代替最新版本。
-2. 用中文确认需求涉及的页面和文件；小型明确变更可直接执行。大范围重构、安全敏感或不可逆修改先说明风险。
-3. 尽量保持当前技术栈和视觉语言。先分析现有代码，做最小必要修改，不重写整站。
-4. 更改后尽可能进行静态检查/构建校验；不能运行时明确告知。通过 GitHub 提交代码，给出 commit 链接。
-5. 普通已确认的页面微调可以提交到 `main` 来触发部署；高风险或大规模改动优先建分支和 PR，再由用户确认合并。
-6. 部署不能仅凭“已提交代码”就宣称成功。尽可能核验 GitHub Actions 运行状态；未能核验时说清楚。
-7. 绝不把 API token、账号密钥、私密信息提交到仓库。Cloudflare 部署凭据存储在 GitHub Actions Secrets 中。
+1. 用已连接 GitHub **读取最新仓库**：`docs/CHATGPT_PROJECT.md`、`docs/PRODUCT_PLAN.md`、`AGENTS.md`、`DECISIONS.md`，再读需要改的实际文件。
+2. 如请求涉及**已有访谈、用户能力、作品背景、个人偏好**，优先找已挂入 ChatGPT 项目的私有文件 `雪雪个人网站_私有访谈档案_v1.md`；否则在个人 Library 文件夹 `/雪雪个人网站/` 查找。**不要把个人 Library 视为已自动加入 Project 文件**。若不可读取，说明限制并以公开概要继续。
+3. 分清决策层次：**已确认要求 / 用户自评 / 待核实 / 助手提案 / 已否定内容**。只把已确认的当正式方向。
+4. 不再重复询问访谈已给出的答案；用户的沟通成本高，优先主动整理、设计和推进，只有关键不确定项才问。
+5. 当前站点为**旧视觉原型**：不喜欢的森林背景及旧布局/颜色/设计系统**并未获准保留**。仅保留技术框架、部署与自动截图工作流。下步应先提供多套全新视觉方案，等待用户选择；不要直接重写生产 UI。
+6. 方案获准后执行实际代码修改；低风险小改可提交 main，大规模视觉改版先建分支与 PR。
+7. 尽可能运行 lint/build，验证 Actions 及部署，并使用最新快照检查桌面/移动端；不能验证的明确告知，不声称成功。
+8. 不把私人访谈、密钥、完整未授权剧本、私人联系方式上传到公开仓库或静态资源。
+9. 每阶段完成后更新相应知识文档（公开规则到 GitHub；详细个人信息到私有档案），标出新增决定及未定问题。
 
-## 视觉验收方式
+## 当前已确认的产品边界（精简版）
 
-ChatGPT 的普通网页抓取不一定能运行 JS 或看到真实页面渲染；必须区分“读过代码”和“看过真实截图”。
+- 网站作为长期个人作品集，短期以获得好的工作机会为核心，兼顾合作与个人品牌。
+- 同等重视剧本和 AI 影像作品，内容真实、完整作品不公开而私下提供。
+- 希望有创意、有个性、有艺术感，但**视觉风格、结构与页面形式仍未定稿**。
+- 当前阶段：**知识归档与旧规范纠错 → 多方向视觉探索 → 原型确认 → 分支开发**。
 
-- `.github/workflows/visual-snapshots.yml` 在部署成功后，或手动触发时，使用 Playwright 打开生产网址。
-- `scripts/capture-visuals.mjs` 自动截取桌面/手机入口、主页、剧本、影像、灵感、关于，以及剧本弹窗。
-- 截图以 JPEG 的 Base64 **纯文本**储存在独立 `visual-snapshots` 分支的 `snapshots/*.b64`，不会成为线上网站资源，也不会触发生产部署。
-- ChatGPT 可以通过 GitHub `fetch_file` 读取某一张 `.b64`，将其作为 JPEG 图片呈现给自己再作视觉评审；必须先确认该分支/文件存在、快照生成成功。Base64 文本不等于重新渲染或真实交互测试。
-- `snapshots/manifest.md` 记录来源 URL、源码 commit、抓取时间与图片名称，避免误把旧快照当成当前线上效果。
-- 动画效果、真实交互与用户所见设备仍可能和静态截图不同；必要时请用户上传录屏或截图佐证。
+## 视觉快照使用说明
 
-## 可粘贴到 ChatGPT 项目「项目指令」的文本
+- `visual-snapshots/snapshots/manifest.md` 记录快照与源 commit、时间。
+- 截图可以分析布局和静态内容，但不能证明动画、完整交互均正常。
+- **当前快照反映的是旧原型而非目标设计**，勿以“视觉一致”为理由保留旧背景。
 
-本项目只负责维护我的个人网站。唯一仓库是 GitHub `goheye/folio`（默认分支 main），线上地址 `https://folio.3303147509.workers.dev/`。每次新会话先通过已连接的 GitHub 读取 `docs/CHATGPT_PROJECT.md`、`AGENTS.md`、`DECISIONS.md` 和最新代码，再按我的需求实际修改、检查、提交；小型明确修改默认直接提交 main 触发 Cloudflare 自动部署，大改先建分支/PR。不要只给示例代码而不提交。提交后回报 commit 链接、检查和部署的可验证状态。视觉评审优先读取 `visual-snapshots` 分支的最新截图；若快照不存在、过期或不能读，明确说明，不要假装看到了真实网页。不得泄露或提交密钥。
+## 私有资料的落地边界
+
+详细访谈文件已放在 ChatGPT **个人 Library** 的 `/雪雪个人网站/雪雪个人网站_私有访谈档案_v1.md`。是否在当前 Project 的文件区中，还需要通过用户界面添加或确认；仓库内不存放它。访问受限时不应凭空声称读取成功。

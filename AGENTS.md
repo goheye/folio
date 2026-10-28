@@ -1,64 +1,60 @@
-# folio — 海燕的个人作品集
+# folio · 个人作品集项目协作规范
 
-沉浸式"创作房间"主题的单页作品集网站。纯静态 SPA，无后端。
+> **先分清「固定技术基础」与「待重新设计的视觉原型」。** 网站目前显示的任何森林背景、颜色、排版、导航及文本均是历史原型，不代表用户已确认的设计标准。
+> 公开仓库不保存完整私人访谈、未公开作品或私人联系方式。
 
-## 技术栈（固定，勿引入替代品）
+## 代码与部署（保留）
 
-- **Vite 8 + React 19 + TypeScript**：纯客户端 SPA，构建产物是纯静态文件
-- **Tailwind CSS v4**：通过 `@tailwindcss/postcss` 接入；页面主体样式是 `src/styles/globals.css` 里的手写 CSS 类
-- **shadcn/ui**：组件按需添加，绝不全量拷贝；图标统一用 lucide-react
-- 部署：GitHub Actions → Cloudflare（见 .github/workflows/deploy.yml）
+- Vite 8 + React 19 + TypeScript；前端静态单页应用（SPA）。
+- Tailwind CSS v4 + 现有 CSS；shadcn/ui 和 lucide-react 按需使用。
+- GitHub：`goheye/folio`，生产分支 `main`。
+- GitHub Actions → Cloudflare Workers；部署入口 `.github/workflows/deploy.yml`。
+- 视觉回归工具：`.github/workflows/visual-snapshots.yml`；旧截图只是**当前原型的参照**，不是获批设计。
+- 保持静态构建与当前部署链路；架构性升级必须先讨论，参考 `DECISIONS.md`。
 
-**架构红线**：不要引入服务端框架（Next/Nuxt/Astro）、不要加运行时依赖、不要改动部署产物形态。若未来确需动态能力，先读 DECISIONS.md 的"损失台账"再讨论。
-
-## 目录
+## 当前文件结构
 
 ```
-index.html            入口（标题/meta/OG 都在这里改）
-src/main.tsx          React 挂载
-src/App.tsx           全站唯一页面（栏目、剧本数据都硬编码在这里）
-src/styles/globals.css  全部样式 + 设计 token（:root 变量）
-src/lib/utils.ts      cn() 工具
-src/components/ui/    shadcn 组件落地处（按需 npx shadcn add）
-public/               静态资源（favicon、背景图 forest-studio.png）
+index.html                  网页入口 / SEO
+src/main.tsx                React 挂载
+src/App.tsx                 当前原型页面与硬编码示例内容
+src/styles/globals.css      当前原型样式（非新设计强制 token）
+src/lib/utils.ts            工具
+public/                     资源；现有背景图非保留项
+docs/CHATGPT_PROJECT.md     ChatGPT 跨会话入口
+docs/PRODUCT_PLAN.md        当前确认的产品边界、后续设计流程
 ```
+
+## 视觉设计状态：完全开放
+
+- 当前森林图、深绿主题、玻璃质感、书架、侧栏、布局、字体和动效**都不锁定**；均可重新设计。
+- 在用户认可具体视觉参考与原型之前，**不得把旧风格写成新方案硬性要求**。
+- 过去的 `--forest` 等 CSS 变量仅服务于旧原型，不是新设计必须复用的全局视觉令牌。
+- 视觉方向、信息架构、导航、内容编排及互动体验均在下一阶段探索。
+- 保持专业质量：明确的内容层级、合适的可读性与对比度、移动端响应式、键盘操作、动效可减弱、性能和真实内容。
+- 禁止把占位文案、虚构作品、示例邮箱当作真实经历或正式对外信息。
 
 ## 常用命令
 
 ```bash
-npm run dev       # 开发服务器 http://localhost:3000
-npm run build     # 类型检查 + 构建 → dist/
-npm run preview   # 本地预览构建产物（= 部署的东西）
-npm run lint      # oxlint
-npm run format    # oxfmt
-npx shadcn add <组件名>   # 添加 UI 组件（自动装依赖）
+npm install
+npm run dev
+npm run build       # tsc --noEmit + vite build
+npm run lint
+npm run preview
 ```
 
-## 设计系统（新页面/改样式必须遵守）
+## 开发与验收
 
-**主题概念**：森林里的创作房间——实景摄影背景、深绿基调、玻璃拟态、漂浮光点。
+1. 新会话先读 `docs/CHATGPT_PROJECT.md`、`docs/PRODUCT_PLAN.md`、`AGENTS.md`、`DECISIONS.md` 和最新相关源码。
+2. 以用户**已确认的产品目标**为准；区分已确认、候选方案、待核实、已否定。
+3. **新视觉方案必须先讨论／对比后选定**；此阶段不修改线上原型。大规模改版使用独立分支与 PR，按用户批准再合并。
+4. 明确小改可以直接提交 `main`；需先检查代码，能运行时执行 `npm run build && npm run lint`，无法运行则说明。
+5. 视觉检查优先查最新 `visual-snapshots` 截图；真实截图、代码推断与动画交互测试分开陈述。
+6. 提交后回报文件、commit 链接、检查结果与实际部署状态；不要将“已推送”视为“部署成功”。
+7. 任何未公开完整剧本、素材或私人资料不得提交公开仓库。不要把完整作品放进静态资源后只用前端隐藏。
+8. 中文 commit 信息，一个主题一个 commit；涉及不可逆变更提前沟通。
 
-**调色板（只用这些变量，禁止即兴色值）**：
-`--forest: #173c32`（主深绿）· `--forest-deep: #0d2a23`（背景加深）· `--leaf: #81b66b`（叶绿点缀）· `--mint: #dcefd3`（薄荷浅底）· `--cream: #fbf8ea`（奶油底）· `--sun: #f4d38a`（暖阳强调）· `--ink: #1c322c`（正文墨色）
+## 私有知识说明
 
-**字体**：大标题/名字用衬线 `Georgia, "Songti SC", serif`；正文 `Arial, "PingFang SC", "Microsoft YaHei", sans-serif`。中文站必须保留中文字体栈。
-
-**质感参数**：卡片圆角 34px；统一缓动 `cubic-bezier(.2,.8,.2,1)`；玻璃拟态 `rgba(20,57,47,.54) + backdrop-filter: blur(18px) saturate(1.15)`；描边 `rgba(255,255,255,.38)`；入场动画 800ms。
-
-**图标**：一律 lucide-react，禁止混用其他图标库或 emoji。
-
-## 反 AI 味规则（改界面前自查）
-
-1. 颜色/间距/阴影从 token 和既有 CSS 类取值，禁止临时发明十六进制色
-2. 禁止全大写 + 宽字距小标签的滥用；分隔符"·"只用于确实并列的信息
-3. 动效"大胆只用一处"：一个页面最多一个记忆点动画，其余克制
-4. 结构元素（编号、边框、分割线）必须承载真实信息，不做装饰
-5. 留白宁多勿少；卡片堆叠和 SaaS 后台式布局一律禁止
-6. 文案用完整自然的中文句子，不用翻译腔
-
-## 工作规则
-
-- 组件改动走 shadcn CLI 添加，样式改动走 globals.css 的类/变量，二者不混
-- 改完必须 `npm run build && npm run lint` 全绿才算完成
-- 涉及视觉的改动，用应用内浏览器截图自查（桌面 1280×720 + 移动 390×844）
-- 提交信息用中文，一个主题一个 commit
+完整访谈、工具熟练度、个人求职经历、修改案例收录在用户的**个人私有 Library／当前 ChatGPT 项目文件**（文件名：`雪雪个人网站_私有访谈档案_v1.md`）。这份档案**不在本公开仓库**；如果未来会话无法访问，应说明限制，不能凭空补全。仅把获准公开、必须协作的规则写在这里。
