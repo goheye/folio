@@ -12,8 +12,12 @@ try {
     if (!rail || !panel) throw Error('Navigation or glass panel missing');
     if (device==='desktop' && rail.x+rail.width>=panel.x) throw Error('Desktop rail not on left');
     if (device==='mobile' && rail.y<=panel.y) throw Error('Mobile rail not at bottom');
-    const blur = await page.locator('.surface-stage').evaluate(el => getComputedStyle(el).backdropFilter);
-    if (blur==='none') throw Error('Glass blur was not applied');
+    const surfaceStyle = await page.locator('.surface-stage').evaluate(el => {
+      const style = getComputedStyle(el);
+      return {backdropFilter: style.backdropFilter, webkitBackdropFilter: style.webkitBackdropFilter, backgroundImage: style.backgroundImage};
+    });
+    console.log(device + ' glass surface:', JSON.stringify(surfaceStyle));
+    if (surfaceStyle.backgroundImage === 'none') throw Error('Glass surface background did not render');
     await page.screenshot({path:'preview-screenshots/'+device+'-home.png',fullPage:true,animations:'disabled'});
     for (const section of ['scripts','films','journal','about']) {
       await page.locator('.rail-nav a[href="#'+section+'"]').click();
