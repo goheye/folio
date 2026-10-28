@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Clapperboard, Menu, Play, X } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Clapperboard, Menu, X } from 'lucide-react';
 
 type DoodleKind = 'book' | 'film' | 'note' | 'star';
 type SceneTone = 'warm' | 'cool';
@@ -12,7 +12,7 @@ const navigation = [
 ];
 
 function Doodle({ kind, size = 52 }: { kind: DoodleKind; size?: number }) {
-  const paths: Record<DoodleKind, React.ReactNode> = {
+  const paths: Record<DoodleKind, ReactNode> = {
     book: <><path d="M6 12 Q18 8 29 15 Q38 9 54 12 L55 48 Q40 44 29 51 Q17 44 6 48 Z" /><path d="M29 15 L29 51 M13 20 Q19 17 24 21 M37 21 Q44 18 49 20 M15 37 L16 38 M22 37 L23 38 M39 37 L40 38 M45 37 L46 38 M17 43 Q21 46 25 43 M41 43 Q44 46 47 43" /></>,
     film: <><path d="M12 24 L50 17 L55 27 L18 35 Z M17 35 L53 28 L53 51 Q51 54 47 54 L15 54 Q10 54 10 49 L10 37 Z" /><path d="M22 23 L30 32 M37 20 L45 29 M18 40 L18 43 M29 40 L29 43 M24 48 Q32 52 38 47 M53 8 L57 10 M44 5 L44 10 M34 9 L37 13" /></>,
     note: <><path d="M12 7 Q29 6 48 9 L49 54 Q30 52 13 55 Z M18 19 L38 19 M18 26 L40 26 M18 33 L35 33" /><path d="M22 42 L23 43 M36 42 L37 43 M26 48 Q31 51 35 47 M10 12 L7 10 M52 14 L56 10" /></>,
