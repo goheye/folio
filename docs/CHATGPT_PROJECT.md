@@ -9,11 +9,12 @@
 - Cloudflare 生产地址：`https://folio.3303147509.workers.dev/`
 - 技术栈：Vite + React + TypeScript + Tailwind v4；Cloudflare Workers 静态资源托管
 - 已存在的项目规范：先读 `AGENTS.md`、`DECISIONS.md` 和 `README.md`，不要重复创建另一套互相矛盾的规范。
+- **第二阶段产品方案**：`docs/PRODUCT_PLAN.md`（区分用户已确认需求和待确认改版建议；未获批准不得将提案当成已定稿或已开发）。
 - 部署：`.github/workflows/deploy.yml` 在推送 `main` 后执行 lint、build 和 wrangler deploy。
 
 ## 每次新会话的默认操作
 
-1. 通过已连接的 GitHub 查阅最新 `main` 的源代码，尤其是 `AGENTS.md`、`DECISIONS.md` 和要改的文件。不要用旧对话中的代码代替最新版本。
+1. 通过已连接的 GitHub 查阅最新 `main` 的源代码，尤其是 `AGENTS.md`、`DECISIONS.md`、`docs/PRODUCT_PLAN.md` 和要改的文件。不要用旧对话中的代码代替最新版本。
 2. 用中文确认需求涉及的页面和文件；小型明确变更可直接执行。大范围重构、安全敏感或不可逆修改先说明风险。
 3. 尽量保持当前技术栈和视觉语言。先分析现有代码，做最小必要修改，不重写整站。
 4. 更改后尽可能进行静态检查/构建校验；不能运行时明确告知。通过 GitHub 提交代码，给出 commit 链接。
