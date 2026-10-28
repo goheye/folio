@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Camera, ChevronRight, Feather, Home, LogOut, Mail, Sparkles, UserRound, X } from 'lucide-react';
 
@@ -26,31 +24,6 @@ export default function HomePage() {
   const [selectedScript, setSelectedScript] = useState<Script | null>(null);
 
   const sectionTitle = useMemo(() => navItems.find((item) => item.id === active)?.label ?? '主页', [active]);
-
-  const openSection = (section: SectionId) => {
-    setEntered(true);
-    setActive(section);
-  };
-
-  useEffect(() => {
-    const context = (document as Document & { modelContext?: { registerTool: (tool: unknown, options?: { signal?: AbortSignal }) => void | Promise<void> } }).modelContext;
-    if (!context?.registerTool) return;
-    const lifecycle = new AbortController();
-    void Promise.resolve(context.registerTool({
-      name: 'open_creative_room',
-      title: '打开创作房间',
-      description: '进入个人网站并打开主页、剧本、影像、灵感或关于栏目。',
-      inputSchema: { type: 'object', properties: { section: { type: 'string', enum: ['home', 'scripts', 'images', 'inspiration', 'about'] } }, required: ['section'], additionalProperties: false },
-      annotations: { readOnlyHint: true, untrustedContentHint: false },
-      execute(input: unknown) {
-        const section = (input as { section?: string })?.section;
-        if (!navItems.some((item) => item.id === section)) throw new Error('未知栏目');
-        openSection(section as SectionId);
-        return { entered: true, section };
-      },
-    }, { signal: lifecycle.signal })).catch(() => undefined);
-    return () => lifecycle.abort();
-  }, []);
 
   useEffect(() => {
     if (!selectedScript) return;
@@ -80,7 +53,7 @@ export default function HomePage() {
       ) : (
         <div className="portfolio-shell">
           <header className="topbar">
-            <button className="mini-brand" type="button" onClick={() => setActive('home')} aria-label="返回主页"><Feather size={17} /><span>HAIYAN'S ROOM</span></button>
+            <button className="mini-brand" type="button" onClick={() => setActive('home')} aria-label="返回主页"><Feather size={17} /><span>HAIYAN&apos;S ROOM</span></button>
             <p><span className="online-dot" /> NOW EXPLORING · {sectionTitle}</p>
             <button className="leave-button" type="button" onClick={() => setEntered(false)}><LogOut size={16} /><span>离开房间</span></button>
           </header>
