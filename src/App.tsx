@@ -1,5 +1,5 @@
 import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Clapperboard, Menu, X } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Clapperboard, House, UserRound } from 'lucide-react';
 
 type DoodleKind = 'book' | 'film' | 'note' | 'star';
 type SceneTone = 'warm' | 'cool';
@@ -64,12 +64,10 @@ function SectionHeading({ eyebrow, title, description }: { eyebrow: string; titl
 }
 
 export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [activeSection,setActiveSection] = useState<SectionId>(currentHash);
   const navigate = (section: SectionId) => {
     setActiveSection(section);
-    setMenuOpen(false);
     window.history.pushState(null, '', '#' + section);
     window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   };
@@ -85,24 +83,39 @@ export default function App() {
   }, []);
   useEffect(() => {
     const closeOnEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { setMenuOpen(false); setShowInfo(false); }
+      if (event.key === 'Escape') { setShowInfo(false); }
     };
     document.addEventListener('keydown', closeOnEsc);
     return () => document.removeEventListener('keydown', closeOnEsc);
   }, []);
   return (
     <div className="site" id="home">
-      <a className="skip-link" href="#works">跳到作品</a>
+      <a className="skip-link" href="#workspace-main">跳到主要内容</a>
+      <div className="workspace-layout">
+        <aside className="side-rail" aria-label="栏目导航">
+          <div className="rail-top" aria-hidden="true"><Doodle kind="star" size={29} /><span>STUDIO</span></div>
+          <nav className="rail-nav" id="primary-nav" aria-label="主要导航">
+            {navigation.map(({ label, href }) => {
+              const section = href.slice(1) as SectionId;
+              const illustration = section === 'scripts' ? <Doodle kind="book" size={31} /> :
+                section === 'films' ? <Doodle kind="film" size={31} /> :
+                section === 'journal' ? <Doodle kind="note" size={31} /> :
+                section === 'about' ? <UserRound size={26} strokeWidth={1.7} /> :
+                <House size={27} strokeWidth={1.8} />;
+              return <a key={href} href={href} aria-current={activeSection === section ? 'page' : undefined} onClick={onNavigate(section)}><span className="rail-nav-icon">{illustration}</span><span className="rail-nav-label">{label}</span></a>;
+            })}
+          </nav>
+          <div className="rail-end" aria-hidden="true"><span className="rail-end-dot" /> MADE WITH STORIES</div>
+        </aside>
+        <div className="workspace-main">
       <div className="topline"><span>一份关于故事和画面的个人作品集</span><span>STORIES · SCRIPTS · VISUALS</span></div>
       <header className="site-header">
         <a className="brand" href="#home" onClick={onNavigate('home')} aria-label="雪雪 · 返回首页"><span className="brand-mark">雪雪<span className="brand-dot">.</span></span><span className="brand-en">XUEXUE / CREATIVE PORTFOLIO</span></a>
-        <button type="button" className="menu-toggle" aria-label={menuOpen ? '关闭导航' : '打开导航'} aria-expanded={menuOpen} aria-controls="primary-nav" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
-        <nav className={'nav ' + (menuOpen ? 'nav-open' : '')} id="primary-nav" aria-label="主要导航">
-          {navigation.map(({ label, href }) => <a key={href} href={href} aria-current={activeSection === href.slice(1) ? "page" : undefined} onClick={onNavigate(href.slice(1) as SectionId)}>{label}</a>)}
-        </nav>
+        <span className="header-meta">STORYTELLING <span>×</span> IMAGINATION</span>
         <a className="header-contact" href="#about" onClick={onNavigate('about')}>聊聊合作 <ArrowUpRight size={16} /></a>
       </header>
-      <main className="site-main">
+      <div className="surface-stage">
+      <main className="site-main" id="workspace-main" tabIndex={-1}>
         {activeSection !== "home" && <div className="stage-context section-wrap"><span>EXPLORING / 0{sections.indexOf(activeSection)+1}</span><strong>{titles[activeSection]}</strong></div>}
         {activeSection === "home" && <div className="stage-enter" key="home">
         <section className="hero section-wrap" aria-labelledby="hero-title">
@@ -181,7 +194,10 @@ export default function App() {
         </section>
         </div>}
       </main>
+      </div>
       <footer className="footer section-wrap"><a className="footer-brand" href="#home" onClick={onNavigate('home')}>雪雪<span>.</span></a><span>STORIES ARE STILL BEING MADE.</span><a href="#home" onClick={onNavigate('home')}>返回首页 ↑</a><span className="footer-doodle"><Doodle kind="film" size={42} /></span></footer>
+        </div>
+      </div>
     </div>
   );
 }

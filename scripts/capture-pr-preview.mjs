@@ -1,21 +1,30 @@
 import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
-
 await mkdir('preview-screenshots', { recursive: true });
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless:true });
 try {
   for (const [device,width,height] of [['desktop',1440,900],['mobile',390,844]]) {
-    const page = await browser.newPage({ viewport:{width,height},deviceScaleFactor:1 });
-    await page.goto('http://127.0.0.1:4173', { waitUntil:'networkidle' });
+    const page = await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+    await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
     await page.evaluate(() => document.fonts.ready);
-    await page.screenshot({ path:'preview-screenshots/'+device+'-home.png',fullPage:true,animations:'disabled' });
+    const rail = await page.locator('.side-rail').boundingBox();
+    const panel = await page.locator('.surface-stage').boundingBox();
+    if (!rail || !panel) throw Error('Navigation or glass panel missing');
+    if (device==='desktop' && rail.x+rail.width>=panel.x) throw Error('Desktop rail not on left');
+    if (device==='mobile' && rail.y<=panel.y) throw Error('Mobile rail not at bottom');
+    const blur = await page.locator('.surface-stage').evaluate(el => getComputedStyle(el).backdropFilter);
+    if (blur==='none') throw Error('Glass blur was not applied');
+    await page.screenshot({path:'preview-screenshots/'+device+'-home.png',fullPage:true,animations:'disabled'});
     for (const section of ['scripts','films','journal','about']) {
-      await page.locator('.site-header .menu-toggle').evaluate(el => {
-        if (getComputedStyle(el).display !== 'none') el.click();
-      });
-      await page.locator('#primary-nav a[href="#'+section+'"]').click();
+      await page.locator('.rail-nav a[href="#'+section+'"]').click();
       await page.locator('#'+section).waitFor({state:'visible'});
+      if (await page.locator('.rail-nav a[aria-current="page"]').getAttribute('href') !== '#'+section) throw Error('Active nav wrong');
       await page.screenshot({path:'preview-screenshots/'+device+'-'+section+'.png',fullPage:true,animations:'disabled'});
+    }
+    if (device==='desktop') {
+      await page.locator('.rail-nav a[href="#home"]').click();
+      await page.locator('.rail-nav a[href="#scripts"]').hover();
+      await page.screenshot({path:'preview-screenshots/desktop-nav-hover.png',animations:'disabled'});
     }
     await page.close();
   }
