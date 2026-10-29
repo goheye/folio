@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { ArrowRight, ArrowUpRight, House, UserRound } from 'lucide-react';
 
 type DoodleKind = 'book' | 'film' | 'note' | 'star';
