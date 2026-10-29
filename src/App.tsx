@@ -4,7 +4,6 @@ import Doodle from './components/Doodle';
 
 type SectionId = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 const sections: SectionId[] = ['home', 'scripts', 'films', 'journal', 'about'];
-const titles: Record<SectionId,string> = {home:'首页', scripts:'剧本创作', films:'AI 影像', journal:'创作手记',about:'关于我'};
 function currentHash(): SectionId {
   const hash = window.location.hash.slice(1);
   return sections.includes(hash as SectionId) ? hash as SectionId : 'home';
