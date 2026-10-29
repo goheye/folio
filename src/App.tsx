@@ -18,14 +18,42 @@ const navigation = [
   { label: '关于', href: '#about' },
 ];
 
-function Doodle({ kind, size = 52 }: { kind: DoodleKind; size?: number }) {
-  const paths: Record<DoodleKind, ReactNode> = {
-    book: <><path d="M6 12 Q18 8 29 15 Q38 9 54 12 L55 48 Q40 44 29 51 Q17 44 6 48 Z" /><path d="M29 15 L29 51 M13 20 Q19 17 24 21 M37 21 Q44 18 49 20 M15 37 L16 38 M22 37 L23 38 M39 37 L40 38 M45 37 L46 38 M17 43 Q21 46 25 43 M41 43 Q44 46 47 43" /></>,
-    film: <><path d="M12 24 L50 17 L55 27 L18 35 Z M17 35 L53 28 L53 51 Q51 54 47 54 L15 54 Q10 54 10 49 L10 37 Z" /><path d="M22 23 L30 32 M37 20 L45 29 M18 40 L18 43 M29 40 L29 43 M24 48 Q32 52 38 47 M53 8 L57 10 M44 5 L44 10 M34 9 L37 13" /></>,
-    note: <><path d="M12 7 Q29 6 48 9 L49 54 Q30 52 13 55 Z M18 19 L38 19 M18 26 L40 26 M18 33 L35 33" /><path d="M22 42 L23 43 M36 42 L37 43 M26 48 Q31 51 35 47 M10 12 L7 10 M52 14 L56 10" /></>,
-    star: <><path d="M30 7 Q34 25 53 30 Q35 34 30 53 Q26 35 7 30 Q26 26 30 7 Z" /><path d="M9 8 L13 12 M50 10 L47 14 M10 52 L14 48" /></>,
-  };
-  return <svg width={size} height={size} viewBox="0 0 62 62" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">{paths[kind]}</svg>;
+function Doodle({ kind, size = 52, interactive = false }: { kind: DoodleKind; size?: number; interactive?: boolean }) {
+  const [snapCount, setSnapCount] = useState(0);
+  const graphic = (
+    <svg key={interactive ? snapCount : undefined} className={'doodle-svg doodle-' + kind + (interactive ? ' doodle-active' : '')} width={size} height={size} viewBox="0 0 62 62" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+      {kind === 'book' && <>
+        <path className="doodle-book-outline" d="M7 13 Q17 8 30 16 Q41 9 55 13 L54 49 Q41 45 30 52 Q18 45 7 49 Z" />
+        <path d="M30 16 L30 52 M13 20 Q19 17 25 21 M36 21 Q43 17 49 20" />
+        <path d="M17 30 L18 30 M23 30 L24 30 M38 30 L39 30 M44 30 L45 30" strokeWidth="4.5" />
+        <path d="M17 38 Q21 42 25 38 M36 38 Q41 42 45 38 M17 44 L24 44 M37 44 L44 44" />
+      </>}
+      {kind === 'film' && <>
+        <g className="doodle-film-clapper">
+          <path d="M10 20 L48 11 L54 24 L15 34 Z" />
+          <path d="M18 19 L25 28 M31 16 L38 25 M43 13 L49 22" />
+        </g>
+        <g className="doodle-film-body">
+          <path d="M15 34 L53 26 L53 49 Q52 53 47 53 L15 53 Q10 53 10 48 L10 36 Z" />
+          <path d="M19 39 L19 42 M29 37 L29 40" strokeWidth="4.5" />
+          <path d="M22 47 Q31 52 40 46" />
+        </g>
+        <path d="M54 6 L57 8 M45 4 L45 8 M35 8 L38 11" strokeWidth="2.8" />
+      </>}
+      {kind === 'note' && <>
+        <path d="M12 8 Q28 5 49 10 L48 53 Q30 50 13 55 Z" />
+        <path d="M18 19 L39 18 M18 27 L41 26 M18 35 L35 34" />
+        <path d="M22 43 L23 43 M36 42 L37 42" strokeWidth="4.5" />
+        <path d="M25 49 Q30 52 35 48 M9 13 L6 11 M52 15 L56 11" />
+      </>}
+      {kind === 'star' && <>
+        <path d="M30 7 Q34 24 53 30 Q35 34 30 53 Q26 35 7 30 Q26 26 30 7 Z" />
+        <path d="M9 8 L13 12 M50 10 L47 14 M10 52 L14 48 M49 49 L52 52" />
+      </>}
+    </svg>
+  );
+  if (!interactive || kind !== 'film') return graphic;
+  return <button className="doodle-trigger" type="button" aria-label="让场记板咔嗒一下" title="咔嗒" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setSnapCount((count) => count + 1); }}>{graphic}</button>;
 }
 
 function SceneArt({ tone = 'warm' }: { tone?: SceneTone }) {
@@ -110,8 +138,7 @@ export default function App() {
         <div className={activeSection === "home" ? "workspace-main workspace-main-home" : "workspace-main"}>
       <div className="topline"><span>一份关于故事和画面的个人作品集</span><span>STORIES · SCRIPTS · VISUALS</span></div>
       <header className="site-header">
-        <a className="brand" href="#home" onClick={onNavigate('home')} aria-label="雪雪 · 返回首页"><span className="brand-mark">雪雪<span className="brand-dot">.</span></span><span className="brand-en">XUEXUE / CREATIVE PORTFOLIO</span></a>
-        <span className="header-meta">STORYTELLING <span>×</span> IMAGINATION</span>
+        <a className="brand" href="#home" onClick={onNavigate('home')} aria-label="雪雪 · 返回首页"><span className="brand-mark">雪雪<span className="brand-dot">.</span></span></a>
         <a className="header-contact" href="#about" onClick={onNavigate('about')}>聊聊合作 <ArrowUpRight size={16} /></a>
       </header>
       <div className="surface-stage">
@@ -120,7 +147,7 @@ export default function App() {
         {activeSection === "home" && <div className="stage-enter home-screen" key="home">
         <section className="home-hero section-wrap" aria-labelledby="hero-title">
           <div className="home-intro">
-            <div className="section-number"><span className="number-line" /> HELLO, THIS IS MY CREATIVE SPACE</div>
+            <div className="section-number"><span className="number-line" /> 故事与影像的双重创作</div>
             <h1 id="hero-title">编织故事，<br /><span>也创造画面。</span></h1>
             <p className="home-role">编剧创作 <span className="times">×</span> AI 影像制作</p>
             <p className="home-description">从故事的第一行字，到镜头里的每一帧。<br />让文字与影像，成为两种同样重要的表达。</p>
@@ -128,18 +155,18 @@ export default function App() {
               <a className="button button-dark" href="#scripts" onClick={onNavigate('scripts')}>剧本创作 <ArrowUpRight size={16} /></a>
               <a className="button button-outline" href="#films" onClick={onNavigate('films')}>AI 影像 <ArrowUpRight size={16} /></a>
             </div>
-            <div className="home-signature"><span className="home-signature-dot" /><span>STORY · CHARACTER · IMAGE</span><span className="home-signature-note">CREATIVE PORTFOLIO</span></div>
+            <div className="home-signature"><span className="home-signature-dot" /><span>剧本创作 · 人物塑造 · AI 影像</span></div>
           </div>
 
           <div className="home-work-stage" aria-label="两条创作方向">
-            <div className="home-work-heading"><span>EXPLORE THE WORK</span><span>01 — 02</span></div>
+            <div className="home-work-heading"><span>两条创作主线</span><span>01 — 02</span></div>
             <div className="home-work-grid">
               <a className="home-work-card home-script-card" href="#scripts" onClick={onNavigate('scripts')}>
                 <div className="home-card-visual home-script-visual">
-                  <span className="home-work-index">01 / SCRIPT</span>
+                  <span className="home-work-index">01 / 剧本</span>
                   <div className="home-script-sheet" aria-hidden="true">
-                    <span className="home-script-label">SCENE STUDY / 示意</span>
-                    <strong>故事 · 人物 · 冲突</strong>
+                    <span className="home-script-label">剧本节选 · 版式示意</span>
+                    <strong>人物 · 情节 · 冲突</strong>
                     <span className="home-script-rule" />
                     <span className="home-script-rule short" />
                     <span className="home-script-rule" />
@@ -147,7 +174,7 @@ export default function App() {
                     <span className="home-script-rule short" />
                   </div>
                   <span className="home-script-doodle"><Doodle kind="book" size={42} /></span>
-                  <span className="home-art-note">LAYOUT STUDY · 排版示意</span>
+                  <span className="home-art-note">内容示意</span>
                 </div>
                 <div className="home-card-meta">
                   <span className="home-card-icon"><Doodle kind="book" size={28} /></span>
@@ -156,19 +183,29 @@ export default function App() {
                 </div>
               </a>
 
-              <a className="home-work-card home-film-card" href="#films" onClick={onNavigate('films')}>
-                <div className="home-card-visual home-film-visual">
-                  <SceneArt tone="cool" />
-                  <span className="home-work-index">02 / VISUAL</span>
-                  <span className="home-film-doodle"><Doodle kind="film" size={39} /></span>
-                  <span className="home-art-note">CONCEPT STUDY · 示意画面</span>
-                </div>
-                <div className="home-card-meta">
-                  <span className="home-card-icon"><Doodle kind="film" size={28} /></span>
-                  <span className="home-card-copy"><strong>AI 影像</strong><small>角色 · 场景 · 镜头语言</small></span>
-                  <ArrowUpRight className="home-card-arrow" size={19} />
-                </div>
-              </a>
+              <div className="home-work-card home-film-card">
+                <a className="home-work-card-link" href="#films" onClick={onNavigate('films')}>
+                  <div className="home-card-visual home-film-visual">
+                    <span className="home-work-index">02 / 影像</span>
+                    <div className="home-film-layout" aria-hidden="true">
+                      <span className="home-film-number">镜头</span>
+                      <div className="home-film-strip">
+                        <span className="home-film-frame frame-one"><i /></span>
+                        <span className="home-film-frame frame-two"><i /></span>
+                        <span className="home-film-frame frame-three"><i /></span>
+                      </div>
+                      <span className="home-film-caption">角色 · 场景 · 镜头语言</span>
+                    </div>
+                    <span className="home-art-note">分镜排版示意</span>
+                  </div>
+                  <div className="home-card-meta">
+                    <span className="home-card-icon"><Doodle kind="film" size={28} /></span>
+                    <span className="home-card-copy"><strong>AI 影像</strong><small>角色 · 场景 · 镜头语言</small></span>
+                    <ArrowUpRight className="home-card-arrow" size={19} />
+                  </div>
+                </a>
+                <span className="home-film-doodle"><Doodle kind="film" size={39} interactive /></span>
+              </div>
             </div>
           </div>
         </section>
@@ -202,7 +239,7 @@ export default function App() {
         </div>}
       </main>
       </div>
-      <footer className="footer section-wrap"><a className="footer-brand" href="#home" onClick={onNavigate('home')}>雪雪<span>.</span></a><span>STORIES ARE STILL BEING MADE.</span><a href="#home" onClick={onNavigate('home')}>返回首页 ↑</a><span className="footer-doodle"><Doodle kind="film" size={42} /></span></footer>
+      <footer className="footer section-wrap"><a className="footer-brand" href="#home" onClick={onNavigate('home')}>雪雪<span>.</span></a><span>STORIES ARE STILL BEING MADE.</span><a href="#home" onClick={onNavigate('home')}>返回首页 ↑</a><span className="footer-doodle"><Doodle kind="film" size={42} interactive /></span></footer>
         </div>
       </div>
     </div>
