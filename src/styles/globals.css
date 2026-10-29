@@ -31,6 +31,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 [hidden] { display: none !important; }
 
 .site { min-height: 100svh; background: var(--paper); }
+.skip-link { position: absolute; top: -60px; left: 20px; z-index: 100; padding: 10px 14px; border-radius: 5px; background: var(--ink); color: #fff; font-size: 12px; }
+.skip-link:focus { top: 10px; }
 .workspace-layout {
   display: grid;
   grid-template-columns: 100px minmax(0, 1fr);
