@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export type DoodleKind = 'book' | 'film' | 'note' | 'star';
+export type DoodleKind = 'book' | 'film' | 'note' | 'star' | 'home' | 'person';
 
 type DoodleProps = {
   kind: DoodleKind;
@@ -9,9 +9,10 @@ type DoodleProps = {
 };
 
 /**
- * Reconstructed vector doodles based on the available style reference.
- * These are SVG paths, not raster screenshots. The original source SVGs
- * were not present in the accessible repository/files at the time of rebuild.
+ * Editable SVG doodles reconstructed from the available style reference.
+ * The original standalone SVG source files were not available when rebuilt.
+ * Keep these expressive marks local to navigation and small interaction moments,
+ * rather than turning the entire site into an illustration.
  */
 export default function Doodle({ kind, size = 52, interactive = false }: DoodleProps) {
   const [snapCount, setSnapCount] = useState(0);
@@ -28,34 +29,51 @@ export default function Doodle({ kind, size = 52, interactive = false }: DoodleP
       strokeWidth="3.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      focusable="false"
     >
       {kind === 'book' && <>
-        <path className="doodle-book-outline" d="M7 13 Q17 8 30 16 Q41 9 55 13 L54 49 Q41 45 30 52 Q18 45 7 49 Z" />
-        <path d="M30 16 L30 52 M13 20 Q19 17 25 21 M36 21 Q43 17 49 20" />
-        <path d="M17 30 L18 30 M23 30 L24 30 M38 30 L39 30 M44 30 L45 30" strokeWidth="4.5" />
-        <path d="M17 38 Q21 42 25 38 M36 38 Q41 42 45 38 M17 44 L24 44 M37 44 L44 44" />
+        <path className="doodle-book-outline" d="M7.5 14 Q17.5 8.5 30.2 16.5 Q41.2 9.5 54.5 13.8 L53 48.5 Q41.5 45.5 30 52 Q19 46 8 50 Z" />
+        <path d="M30.2 16.5 L30 51.5 M13 20 Q19 17 25 21 M36 21 Q42 17 49 20" />
+        <path d="M18 29 L18.7 29.5 M23 28.5 L23.7 29" strokeWidth="4.8" />
+        <path d="M17.5 36 Q21 39.5 24.5 35.8 M37 36 Q41 40 45 35.2" />
+        <path d="M14 33 L12.5 34 M47 32.5 L48.5 33.5 M17 44 L24 44 M37 43.5 L44 43.2" strokeWidth="2.5" />
       </>}
       {kind === 'film' && <>
         <g className="doodle-film-clapper">
-          <path d="M10 20 L48 11 L54 24 L15 34 Z" />
-          <path d="M18 19 L25 28 M31 16 L38 25 M43 13 L49 22" />
+          <path d="M9.5 19.5 L47.5 10.5 Q51.5 10 53.5 15 L55 22.5 L14.5 32 Z" />
+          <path d="M18 18 L25 28 M31 15 L38.5 25 M43.5 12.5 L50 22" />
         </g>
         <g className="doodle-film-body">
-          <path d="M15 34 L53 26 L53 49 Q52 53 47 53 L15 53 Q10 53 10 48 L10 36 Z" />
-          <path d="M19 39 L19 42 M29 37 L29 40" strokeWidth="4.5" />
-          <path d="M22 47 Q31 52 40 46" />
+          <path d="M14.5 32.5 Q12 33 11.5 37 L10.5 47.5 Q10 52.5 16 53 L47.5 53 Q52.5 52.5 53 47.5 L53 27.5" />
+          <path d="M21 39 L21.5 39.5 M31 37.5 L31.5 38" strokeWidth="4.8" />
+          <path d="M21.5 46.5 Q31 52 41 45.5" />
+          <path d="M16 43 L14 44 M45 41 L47 42" strokeWidth="2.4" />
         </g>
-        <path d="M54 6 L57 8 M45 4 L45 8 M35 8 L38 11" strokeWidth="2.8" />
+        <path d="M55 5.5 L58 7 M45 4 L45 7.5 M35.5 7.5 L38 10" strokeWidth="2.8" />
       </>}
       {kind === 'note' && <>
-        <path d="M12 8 Q28 5 49 10 L48 53 Q30 50 13 55 Z" />
-        <path d="M18 19 L39 18 M18 27 L41 26 M18 35 L35 34" />
-        <path d="M22 43 L23 43 M36 42 L37 42" strokeWidth="4.5" />
-        <path d="M25 49 Q30 52 35 48 M9 13 L6 11 M52 15 L56 11" />
+        <path d="M12.5 8.5 Q29 5.5 49 10.5 L48 52.5 Q30 50 13 55 Z" />
+        <path d="M18 18.5 L39 18 M18 25.5 L41 25 M18 32 L34.5 32" />
+        <path d="M22 40 L22.7 40.5 M35.5 39.5 L36.2 40" strokeWidth="4.8" />
+        <path d="M23 46 Q29.5 51 36 45.5 M9 13 L6.5 11 M52 15 L56 11.5" />
       </>}
       {kind === 'star' && <>
-        <path d="M30 7 Q34 24 53 30 Q35 34 30 53 Q26 35 7 30 Q26 26 30 7 Z" />
-        <path d="M9 8 L13 12 M50 10 L47 14 M10 52 L14 48 M49 49 L52 52" />
+        <path d="M30.5 7 Q33 23.5 52.5 29.5 Q35 34 30 53 Q26 35 7.5 30 Q25.5 26 30.5 7 Z" />
+        <path d="M24 29 L24.5 29.5 M36 29 L36.5 29.5" strokeWidth="4.8" />
+        <path d="M25.5 36 Q30.5 40 35.5 35.5 M9 8 L13 12 M50 10 L47 14 M10 52 L14 48 M49 49 L52 52" strokeWidth="2.8" />
+      </>}
+      {kind === 'home' && <>
+        <path d="M7.5 28.5 L29.5 9.5 Q31 8 32.5 10 L54.5 28 M13.5 25 L13.5 50 Q13.5 53 17 53 L45 53 Q49 53 49 49 L49 25" />
+        <path d="M23 32 L23.7 32.5 M37 32 L37.7 32.5" strokeWidth="4.8" />
+        <path d="M23 39 Q30 44 38 39 M25 52.5 L25 45 Q25 42 28 42 L34 42 Q37 42 37 45 L37 52" />
+        <path d="M7 23 L11 19 M52 18 L56 22" strokeWidth="2.6" />
+      </>}
+      {kind === 'person' && <>
+        <path d="M17 25 Q13 14 23 9 Q31 4.5 39 10 Q48 15 44 26" />
+        <path d="M17.5 23 Q17 14 25 13 Q31 17 40 12 Q45 17 44 24 L42.5 34 Q39 43 31 43 Q22 42 19 34 Z" />
+        <path d="M25 28 L25.5 28.5 M36 27.5 L36.5 28" strokeWidth="4.8" />
+        <path d="M25 35 Q30.5 39 36.5 34.5 M11 54 Q14 44 23 42 M40 42 Q50 45 52 54" />
+        <path d="M14 48 L10.5 45 M48 47 L52 44" strokeWidth="2.6" />
       </>}
     </svg>
   );
