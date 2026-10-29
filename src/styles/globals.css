@@ -270,6 +270,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
 }
 .home-work-card:hover { transform: translateY(-4px); border-color: #b9d2c0; box-shadow: 0 12px 23px rgba(38, 55, 42, .09); }
+.home-script-card:hover { transform: translateY(-4px) rotate(-.35deg); }
+.home-film-card:hover { transform: translateY(-4px) rotate(.35deg); }
 .home-work-card-link { display: flex; flex: 1; flex-direction: column; min-width: 0; }
 .home-card-visual {
   position: relative;
