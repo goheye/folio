@@ -166,16 +166,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .site-main { min-width: 0; min-height: 0; }
 .site-main-home { display: flex; align-items: center; }
 .stage-enter { width: 100%; animation: stage-enter .28s ease both; }
-.stage-context {
-  display: flex;
-  align-items: baseline;
-  gap: 15px;
-  margin: 16px auto 0;
-  color: var(--muted);
-  font-size: 10px;
-  letter-spacing: .08em;
-}
-.stage-context strong { color: var(--ink); font-family: var(--serif); font-size: 19px; font-weight: 600; letter-spacing: 0; }
 .section-wrap { width: min(1200px, calc(100% - 48px)); margin-inline: auto; }
 
 .home-hero {
@@ -357,7 +347,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .doodle-film-clapper { transform-box: fill-box; transform-origin: 10% 100%; }
 .doodle-active .doodle-film-clapper { animation: clapper-snap .38s cubic-bezier(.22,.78,.24,1.25); }
 .home-card-meta { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 12px 5px 5px; color: var(--ink); }
-.home-card-icon { display: grid; flex: none; place-items: center; width: 31px; height: 31px; color: var(--ink); }
 .home-card-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .home-card-copy strong { font-family: var(--serif); font-size: 16px; font-weight: 650; line-height: 1.1; }
 .home-card-copy small { color: var(--muted); font-size: 9px; line-height: 1.4; white-space: nowrap; }
@@ -498,8 +487,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .home-film-doodle { top: 8px; right: 8px; }
   .doodle-trigger { width: 36px; height: 36px; }
   .home-card-meta { gap: 5px; padding: 10px 3px 4px; }
-  .home-card-icon { width: 24px; height: 24px; }
-  .home-card-icon svg { width: 22px; height: 22px; }
   .home-card-copy strong { font-size: 13px; }
   .home-card-copy small { font-size: 8px; white-space: normal; }
   .home-card-arrow { width: 16px; }
@@ -529,7 +516,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .workspace-layout { padding-inline: 8px; }
   .home-intro h1 { font-size: 35px; }
   .home-work-grid { gap: 7px; }
-  .home-card-icon { display: none; }
   .home-card-copy strong { font-size: 12px; }
   .home-card-copy small { font-size: 8px; }
   .home-film-layout { width: 86%; }
