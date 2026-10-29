@@ -154,7 +154,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   gap: 10px;
   min-height: 40px;
   padding: 0 15px;
-  border: 1px solid var(--ink);
   border-radius: 6px;
   border: 1px solid rgba(41,45,43,.12);
   background: rgba(255,255,255,.64);
@@ -223,7 +222,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 }
 .button:hover { transform: translateY(-2px); }
 .button-dark { background: var(--ink); color: #fff; }
-.button-dark:hover { background: #46544a; box-shadow: 0 5px 12px rgba(31, 49, 36, .12); }
+.button-dark:hover { background: #424744; box-shadow: 0 5px 12px rgba(31,35,32,.1); }
 .button-outline { border-color: rgba(41,45,43,.14); background: rgba(255,255,255,.62); color: var(--ink); box-shadow: inset 0 1px 0 rgba(255,255,255,.96), 0 2px 7px rgba(31,35,32,.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .button-outline:hover { border-color: rgba(41,45,43,.22); background: rgba(255,255,255,.9); box-shadow: inset 0 1px 0 #fff, 0 6px 15px rgba(31,35,32,.06); }
 .home-signature {
@@ -357,7 +356,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 }
 .doodle-trigger:hover { border-color: #fff; transform: rotate(-4deg) scale(1.06); background: rgba(255,255,255,.96); box-shadow: 0 5px 12px rgba(31,35,32,.07); }
 .doodle-svg { display: block; overflow: visible; }
-.doodle-book, .doodle-note, .doodle-star { transition: transform .22s ease; transform-origin: center; }
+.doodle-book, .doodle-note, .doodle-star, .doodle-home, .doodle-person { transition: transform .22s ease; transform-origin: center; }
 .home-work-card:hover .doodle-book { animation: book-wiggle .44s ease; }
 .home-work-card:hover .doodle-note { animation: note-wiggle .38s ease; }
 .doodle-film-clapper { transform-box: fill-box; transform-origin: 10% 100%; }
