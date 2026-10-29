@@ -66,7 +66,7 @@ export default function App() {
           <div className="rail-end" aria-hidden="true"><span className="rail-end-dot" /> MADE WITH STORIES</div>
         </aside>
         <div className={activeSection === "home" ? "workspace-main workspace-main-home" : "workspace-main"}>
-      <div className="topline"><span>一份关于故事和画面的个人作品集</span><span>STORIES · SCRIPTS · VISUALS</span></div>
+      
       <header className="site-header">
         <a className="brand" href="#home" onClick={onNavigate('home')} aria-label="雪雪 · 返回首页"><span className="brand-mark">雪雪<span className="brand-dot">.</span></span></a>
         <a className="header-contact" href="#about" onClick={onNavigate('about')}>聊聊合作 <ArrowUpRight size={16} /></a>
