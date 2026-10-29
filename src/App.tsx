@@ -1,5 +1,5 @@
 import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Clapperboard, House, UserRound } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, House, UserRound } from 'lucide-react';
 
 type DoodleKind = 'book' | 'film' | 'note' | 'star';
 type SceneTone = 'warm' | 'cool';
@@ -115,56 +115,63 @@ export default function App() {
         <a className="header-contact" href="#about" onClick={onNavigate('about')}>聊聊合作 <ArrowUpRight size={16} /></a>
       </header>
       <div className="surface-stage">
-      <main className="site-main" id="workspace-main" tabIndex={-1}>
+      <main className={activeSection === "home" ? "site-main site-main-home" : "site-main"} id="workspace-main" tabIndex={-1}>
         {activeSection !== "home" && <div className="stage-context section-wrap"><span>EXPLORING / 0{sections.indexOf(activeSection)+1}</span><strong>{titles[activeSection]}</strong></div>}
-        {activeSection === "home" && <div className="stage-enter" key="home">
-        <section className="hero section-wrap" aria-labelledby="hero-title">
-          <div className="hero-copy">
+        {activeSection === "home" && <div className="stage-enter home-screen" key="home">
+        <section className="home-hero section-wrap" aria-labelledby="hero-title">
+          <div className="home-intro">
             <div className="section-number"><span className="number-line" /> HELLO, THIS IS MY CREATIVE SPACE</div>
-            <div className="hero-headline">
-              <h1 id="hero-title">编织故事，<br /><span>也创造画面。</span></h1>
-              <span className="hero-scribble" aria-hidden="true"><svg viewBox="0 0 260 26" preserveAspectRatio="none"><path d="M5 15 Q75 2 128 12 T255 6" fill="none" stroke="#e9ab61" strokeWidth="5" strokeLinecap="round" /></svg></span>
+            <h1 id="hero-title">编织故事，<br /><span>也创造画面。</span></h1>
+            <p className="home-role">编剧创作 <span className="times">×</span> AI 影像制作</p>
+            <p className="home-description">从故事的第一行字，到镜头里的每一帧。<br />让文字与影像，成为两种同样重要的表达。</p>
+            <div className="home-actions">
+              <a className="button button-dark" href="#scripts" onClick={onNavigate('scripts')}>剧本创作 <ArrowUpRight size={16} /></a>
+              <a className="button button-outline" href="#films" onClick={onNavigate('films')}>AI 影像 <ArrowUpRight size={16} /></a>
             </div>
-            <p className="hero-role">编剧创作 <span className="times">×</span> AI 影像制作</p>
-            <p className="hero-description">从故事的第一行字，到镜头里的每一帧。<br />在这里，记录正在发生的创作。</p>
-            <div className="hero-actions"><a className="button button-dark" href="#works">观看作品 <ArrowRight size={17} /></a><a className="button button-outline" href="#about" onClick={onNavigate('about')}>了解我 <ArrowUpRight size={16} /></a></div>
-            <div className="hero-bottom"><span className="hero-index">01 <span>/</span> 05</span><span>向下探索</span><ArrowDownRight size={18} /></div>
+            <div className="home-signature"><span className="home-signature-dot" /><span>STORY · CHARACTER · IMAGE</span><span className="home-signature-note">CREATIVE PORTFOLIO</span></div>
           </div>
-          <div className="hero-media" aria-label="原创概念插画区域">
-            <div className="media-tape media-tape-top" aria-hidden="true" />
-            <div className="hero-frame"><SceneArt /><span className="frame-label">VISUAL STUDY · 排版概念示意</span></div>
-            <div className="media-tape media-tape-bottom" aria-hidden="true" />
-            <span className="hero-side-note">IMAGINE<br />THE SCENE!</span>
-            <span className="doodle-float"><Doodle kind="film" size={72} /></span>
-            <span className="media-caption">STORY IN MOTION <span>↗</span></span>
-            <span className="orange-star" aria-hidden="true"><Doodle kind="star" size={35} /></span>
+
+          <div className="home-work-stage" aria-label="两条创作方向">
+            <div className="home-work-heading"><span>EXPLORE THE WORK</span><span>01 — 02</span></div>
+            <div className="home-work-grid">
+              <a className="home-work-card home-script-card" href="#scripts" onClick={onNavigate('scripts')}>
+                <div className="home-card-visual home-script-visual">
+                  <span className="home-work-index">01 / SCRIPT</span>
+                  <div className="home-script-sheet" aria-hidden="true">
+                    <span className="home-script-label">SCENE STUDY / 示意</span>
+                    <strong>故事 · 人物 · 冲突</strong>
+                    <span className="home-script-rule" />
+                    <span className="home-script-rule short" />
+                    <span className="home-script-rule" />
+                    <span className="home-script-rule mid" />
+                    <span className="home-script-rule short" />
+                  </div>
+                  <span className="home-script-doodle"><Doodle kind="book" size={42} /></span>
+                  <span className="home-art-note">LAYOUT STUDY · 排版示意</span>
+                </div>
+                <div className="home-card-meta">
+                  <span className="home-card-icon"><Doodle kind="book" size={28} /></span>
+                  <span className="home-card-copy"><strong>剧本创作</strong><small>故事 · 人物 · 世界观</small></span>
+                  <ArrowUpRight className="home-card-arrow" size={19} />
+                </div>
+              </a>
+
+              <a className="home-work-card home-film-card" href="#films" onClick={onNavigate('films')}>
+                <div className="home-card-visual home-film-visual">
+                  <SceneArt tone="cool" />
+                  <span className="home-work-index">02 / VISUAL</span>
+                  <span className="home-film-doodle"><Doodle kind="film" size={39} /></span>
+                  <span className="home-art-note">CONCEPT STUDY · 示意画面</span>
+                </div>
+                <div className="home-card-meta">
+                  <span className="home-card-icon"><Doodle kind="film" size={28} /></span>
+                  <span className="home-card-copy"><strong>AI 影像</strong><small>角色 · 场景 · 镜头语言</small></span>
+                  <ArrowUpRight className="home-card-arrow" size={19} />
+                </div>
+              </a>
+            </div>
           </div>
         </section>
-
-        <section className="gateway section-wrap" id="works" aria-labelledby="gateway-title">
-          <div className="gateway-top"><p className="eyebrow">EXPLORE MY WORK</p><h2 id="gateway-title">两个世界，一种创作。</h2><p>文字承载故事，影像让想象拥有形状。</p></div>
-          <div className="gateway-grid">
-            <a className="gateway-card" href="#scripts" onClick={onNavigate('scripts')}><div className="gateway-icon"><Doodle kind="book" size={57} /></div><div><span className="gateway-no">01 / WRITING</span><h3>剧本创作</h3><p>故事 · 人物 · 世界观</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
-            <a className="gateway-card" href="#films" onClick={onNavigate('films')}><div className="gateway-icon"><Doodle kind="film" size={57} /></div><div><span className="gateway-no">02 / FILMMAKING</span><h3>AI 影像</h3><p>角色 · 分镜 · 场景</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
-            <a className="gateway-card gateway-note" href="#journal" onClick={onNavigate('journal')}><div className="gateway-icon"><Doodle kind="note" size={57} /></div><div><span className="gateway-no">03 / JOURNAL</span><h3>创作手记</h3><p>过程 · 灵感 · 尝试</p></div><ArrowUpRight className="gateway-arrow" size={24} /></a>
-          </div>
-        </section>
-
-        <section className="featured section-wrap" aria-labelledby="featured-title">
-          <SectionHeading eyebrow="SELECTED WORK / 作品一览" title="从文字，到镜头。" description="这里会逐渐收录经过确认、适合公开的作品片段。现在先呈现新版的展示结构。" />
-          <div className="featured-grid">
-            <a className="featured-card" href="#scripts" onClick={onNavigate('scripts')}>
-              <div className="featured-visual featured-script"><span className="visual-top">STORY / 001</span><div className="script-art"><span>故事还在继续</span><i /><i /><i /></div><span className="corner-stamp">SCRIPT</span></div>
-              <div className="featured-meta"><div><span className="eyebrow">WRITING · 剧本</span><h3>故事的第一行</h3><p>公开节选整理中 · 展示位示意</p></div><ArrowUpRight size={23} /></div>
-            </a>
-            <a className="featured-card" href="#films" onClick={onNavigate('films')}>
-              <div className="featured-visual"><SceneArt tone="cool" /><span className="visual-top visual-top-light">VISUAL / 002</span><span className="film-art-stamp"><Clapperboard size={16} /> 概念画面 / 非正式作品</span></div>
-              <div className="featured-meta"><div><span className="eyebrow">VISUAL · AI 影像</span><h3>让想象进入画面</h3><p>演示片段待补充 · 展示位示意</p></div><ArrowUpRight size={23} /></div>
-            </a>
-          </div>
-          <p className="privacy-hint"><span className="hint-mark">✳</span> 这里展示的插画与文字为新版样式演示，并非已公开的个人作品或可播放的视频。</p>
-        </section>
-
         </div>}
         {activeSection === 'scripts' && <div className="stage-enter" key="scripts">
         <section className="detail-section section-wrap" id="scripts">
