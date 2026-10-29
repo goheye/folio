@@ -217,3 +217,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #b77637;outline-offset:4p
 @media(prefers-reduced-motion:reduce){
   .home-work-card,.home-card-arrow,.home-film-visual .scene-art{transition:none}
 }
+
+@media(max-width:760px){
+  .workspace-main-home{padding-bottom:0}
+  .workspace-main-home .footer{display:none}
+}
