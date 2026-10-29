@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import './clapperboard-icon.css';
 
 type ClapperboardIconProps = {
@@ -25,6 +25,7 @@ export default function ClapperboardIcon({
   const [internalPlaying, setInternalPlaying] = useState(false);
   const [snapId, setSnapId] = useState(0);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const filterPrefix = useId().replace(/:/g, '');
   const isPlaying = playing ?? internalPlaying;
 
   useEffect(() => () => {
@@ -88,17 +89,17 @@ export default function ClapperboardIcon({
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <filter id="clapper-rough-edge" x="-8%" y="-8%" width="116%" height="116%">
+          <filter id={`${filterPrefix}-rough-edge`} x="-8%" y="-8%" width="116%" height="116%">
             <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" seed="7" result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.15" />
           </filter>
-          <filter id="clapper-grain">
+          <filter id={`${filterPrefix}-grain`}>
             <feTurbulence type="fractalNoise" baseFrequency=".82" numOctaves="2" seed="13" />
             <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .24 0" />
           </filter>
         </defs>
 
-        <g className="clapperboard-doodle" filter="url(#clapper-rough-edge)">
+        <g className="clapperboard-doodle" filter={`url(#${filterPrefix}-rough-edge)`}>
           <path d="M33 103 L157 31 Q163 28 168 34 L190 72 L65 145 Z" fill="#080808" stroke="#080808" strokeWidth="8" strokeLinejoin="round" />
           <path d="M40 101 L159 36 L169 52 L50 118 Z" fill="#fff" />
           <path d="M80 79 L99 69 L112 87 L93 98 Z M126 54 L145 44 L158 62 L139 73 Z" fill="#fff" />
@@ -114,7 +115,7 @@ export default function ClapperboardIcon({
           </g>
         </g>
 
-        <rect x="0" y="0" width="240" height="220" filter="url(#clapper-grain)" opacity=".3" pointerEvents="none" />
+        <rect x="0" y="0" width="240" height="220" filter={`url(#${filterPrefix}-grain)`} opacity=".3" pointerEvents="none" />
 
         <g className={`clapperboard-lid ${snapId ? 'is-snapping' : ''}`} key={snapId}>
           <path d="M29 91 L151 20 Q158 16 163 23 L184 60 L60 132 Q55 135 50 130 L28 101 Q25 96 29 91 Z" fill="#080808" stroke="#080808" strokeWidth="5" strokeLinejoin="round" />
