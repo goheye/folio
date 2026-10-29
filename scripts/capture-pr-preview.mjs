@@ -7,6 +7,17 @@ try {
     const page = await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
     await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
     await page.evaluate(() => document.fonts.ready);
+    const homeMetrics = await page.evaluate(() => ({
+      scrollHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight,
+      workCards: document.querySelectorAll('.home-work-card').length,
+      legacyHomeSections: document.querySelectorAll('.gateway, .featured').length,
+    }));
+    if (homeMetrics.workCards !== 2 || homeMetrics.legacyHomeSections !== 0) throw Error('Home must present two creative tracks without the stacked poster sections');
+    if (device === 'desktop' && homeMetrics.scrollHeight > homeMetrics.viewportHeight + 80) {
+      throw Error('Desktop home still behaves like a long poster: ' + JSON.stringify(homeMetrics));
+    }
+    await page.screenshot({path:'preview-screenshots/'+device+'-home-fold.png',fullPage:false,animations:'disabled'});
     const rail = await page.locator('.side-rail').boundingBox();
     const panel = await page.locator('.surface-stage').boundingBox();
     if (!rail || !panel) throw Error('Navigation or glass panel missing');
