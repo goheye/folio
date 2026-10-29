@@ -1,5 +1,5 @@
 import { useEffect, useState, type MouseEvent } from 'react';
-import { ArrowRight, ArrowUpRight, House, UserRound } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Doodle from './components/Doodle';
 
 type SectionId = 'home' | 'scripts' | 'films' | 'journal' | 'about';
@@ -57,8 +57,8 @@ export default function App() {
               const illustration = section === 'scripts' ? <Doodle kind="book" size={31} /> :
                 section === 'films' ? <Doodle kind="film" size={31} /> :
                 section === 'journal' ? <Doodle kind="note" size={31} /> :
-                section === 'about' ? <UserRound size={26} strokeWidth={1.7} /> :
-                <House size={27} strokeWidth={1.8} />;
+                section === 'about' ? <Doodle kind="person" size={29} /> :
+                <Doodle kind="home" size={29} />;
               return <a key={href} href={href} aria-current={activeSection === section ? 'page' : undefined} onClick={onNavigate(section)}><span className="rail-nav-icon">{illustration}</span><span className="rail-nav-label">{label}</span></a>;
             })}
           </nav>
