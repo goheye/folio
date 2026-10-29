@@ -47,5 +47,6 @@
 - 自动化验收强化为：桌面首页不应因外框高度计算产生垂直滚动；不允许横向溢出；内容外框不应重新出现；场记板点击必须触发 SVG 动画。
 
 ### 状态
-- 仍是 Draft 视觉原型。需等待最新 lint / build / Playwright 和 Cloudflare 独立预览检查完成，再判断实际结果。
-- `main` 未修改，生产网站未部署这轮 UI。
+- `npm run lint`、`npm run build`、Playwright 桌面 / 手机截图、栏目切换与场记板 SVG 点击动画检查均通过。
+- 桌面 1440×900：`document.documentElement.scrollHeight === 900`；手机 390×844：`scrollHeight === 844`；两端均无横向溢出。主内容外框边框 / 圆角为 0，溢出模式为 visible。
+- Cloudflare 独立预览部署成功。仍是 Draft 视觉原型，等待用户评审；`main` 未修改，生产网站未部署这轮 UI。
