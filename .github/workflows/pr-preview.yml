@@ -1,6 +1,8 @@
 name: Pull Request · Build and Visual Preview
 
 on:
+  push:
+    branches: ['design/**']
   pull_request:
     branches: [main]
   workflow_dispatch:
