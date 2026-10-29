@@ -13,13 +13,21 @@ try {
       workCards: document.querySelectorAll('.home-work-card').length,
       legacyHomeSections: document.querySelectorAll('.gateway, .featured').length,
       horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
+      boxes: ['.workspace-layout','.workspace-main','.site-header','.surface-stage','.site-main-home','.home-hero','.footer','.side-rail'].map(selector => {
+        const element = document.querySelector(selector);
+        if (!element) return {selector,missing:true};
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return {selector,top:Math.round(rect.top),bottom:Math.round(rect.bottom),height:Math.round(rect.height),minHeight:style.minHeight,flex:style.flex};
+      }),
     }));
+    console.log(device + ' home metrics:', JSON.stringify(homeMetrics));
+    await page.screenshot({path:'preview-screenshots/'+device+'-home-fold.png',fullPage:false,animations:'disabled'});
     if (homeMetrics.workCards !== 2 || homeMetrics.legacyHomeSections !== 0) throw Error('Home must present two creative tracks without the stacked poster sections');
     if (device === 'desktop' && homeMetrics.scrollHeight > homeMetrics.viewportHeight + 2) {
       throw Error('Desktop home should fit the viewport without forced vertical scrolling: ' + JSON.stringify(homeMetrics));
     }
     if (homeMetrics.horizontalOverflow) throw Error('Home has horizontal overflow: ' + JSON.stringify(homeMetrics));
-    await page.screenshot({path:'preview-screenshots/'+device+'-home-fold.png',fullPage:false,animations:'disabled'});
     const rail = await page.locator('.side-rail').boundingBox();
     const panel = await page.locator('.surface-stage').boundingBox();
     if (!rail || !panel) throw Error('Navigation or glass panel missing');
