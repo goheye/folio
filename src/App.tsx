@@ -2,7 +2,6 @@ import { useEffect, useState, type MouseEvent } from 'react';
 import { ArrowRight, ArrowUpRight, House, UserRound } from 'lucide-react';
 import Doodle from './components/Doodle';
 
-type SceneTone = 'warm' | 'cool';
 type SectionId = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 const sections: SectionId[] = ['home', 'scripts', 'films', 'journal', 'about'];
 const titles: Record<SectionId,string> = {home:'首页', scripts:'剧本创作', films:'AI 影像', journal:'创作手记',about:'关于我'};
@@ -17,37 +16,6 @@ const navigation = [
   { label: '创作手记', href: '#journal' },
   { label: '关于', href: '#about' },
 ];
-
-function SceneArt({ tone = 'warm' }: { tone?: SceneTone }) {
-  const cool = tone === 'cool';
-  return (
-    <svg className={'scene-art ' + (cool ? 'scene-art-cool' : '')} viewBox="0 0 720 520" role="img" aria-label="用于排版演示的原创山峦与楼阁概念插画，并非正式作品画面" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <linearGradient id={'sky-' + tone} x1="0" y1="0" x2="1" y2="1"><stop stopColor={cool ? '#c4d6d9' : '#f5cbb5'} /><stop offset=".58" stopColor={cool ? '#b6c7c4' : '#f5d9bd'} /><stop offset="1" stopColor={cool ? '#e2e0d2' : '#fae4cc'} /></linearGradient>
-        <linearGradient id={'lake-' + tone} x1="0" y1="0" x2="0" y2="1"><stop stopColor={cool ? '#9fb3ab' : '#d1b29e'} /><stop offset="1" stopColor={cool ? '#536f72' : '#8f8c83'} /></linearGradient>
-      </defs>
-      <rect width="720" height="520" fill={'url(#sky-' + tone + ')'} />
-      <circle cx="520" cy="115" r="57" fill={cool ? '#f4f5e8' : '#fff1d1'} opacity=".85" />
-      <path d="M0 302 L120 202 L202 274 L326 152 L434 275 L531 192 L720 307 L720 520 L0 520Z" fill={cool ? '#91a8a9' : '#c7a8a7'} opacity=".67" />
-      <path d="M0 345 L118 268 L234 328 L365 235 L459 316 L612 254 L720 344 L720 520 L0 520Z" fill={cool ? '#738e91' : '#a48f93'} opacity=".78" />
-      <path d="M0 388 Q124 350 236 370 T500 365 T720 377 L720 520 L0 520Z" fill={'url(#lake-' + tone + ')'} />
-      <path d="M0 430 Q140 405 260 424 T515 418 T720 425 M60 458 Q192 440 314 452 T700 451 M200 481 Q328 467 470 483" stroke={cool ? '#e5e4d8' : '#f7dac7'} strokeWidth="2" opacity=".4" fill="none" />
-      <g transform="translate(330 222)" fill={cool ? '#354c54' : '#504a51'}>
-        <path d="M-98 59 L0 10 L100 60 L90 65 L-87 65 Z" />
-        <path d="M-70 66 H72 V102 H-70Z" />
-        <path d="M-116 108 L0 56 L122 110 L110 115 H-104Z" />
-        <path d="M-80 116 H85 V171 H-80Z" />
-        <path d="M-125 176 L0 130 L130 179 L120 188 H-118Z" />
-        <path d="M-86 189 H87 V234 H-86Z" />
-        <path d="M-10 0 L0 -28 L10 0 Z" />
-      </g>
-      <g fill={cool ? '#c8c0a6' : '#f3ba81'} opacity=".84"><rect x="299" y="340" width="13" height="29" rx="2" /><rect x="340" y="340" width="13" height="29" rx="2" /><rect x="380" y="340" width="13" height="29" rx="2" /><rect x="304" y="292" width="10" height="19" rx="2" /><rect x="374" y="292" width="10" height="19" rx="2" /></g>
-      <g stroke={cool ? '#3d6569' : '#6b6c68'} strokeWidth="6" strokeLinecap="round" opacity=".65"><path d="M20 520 Q55 408 25 325 M690 520 Q656 380 707 310" /><path d="M25 354 L5 330 M32 386 L66 345 M674 399 L709 354 M663 441 L635 386" /></g>
-      <g fill={cool ? '#5f8180' : '#a27c82'} opacity=".7"><ellipse cx="21" cy="329" rx="60" ry="38" /><ellipse cx="78" cy="339" rx="44" ry="28" /><ellipse cx="700" cy="312" rx="70" ry="40" /><ellipse cx="638" cy="339" rx="53" ry="30" /></g>
-      <g fill={cool ? '#f5f4e3' : '#fff3d4'} opacity=".65"><circle cx="162" cy="127" r="3" /><circle cx="232" cy="66" r="2" /><circle cx="604" cy="219" r="3" /></g>
-    </svg>
-  );
-}
 
 function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return <div className="section-heading"><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div><p className="section-description">{description}</p></div>;
@@ -182,7 +150,7 @@ export default function App() {
         {activeSection === 'films' && <div className="stage-enter" key="films">
         <section className="detail-section section-wrap" id="films">
           <SectionHeading eyebrow="02 / AI FILMMAKING" title="有些故事，想用画面来讲。" description="人物、场景、分镜与视频片段会构成影像作品档案。此处先展示新布局，不冒充正式成片。" />
-          <div className="detail-panel detail-film"><div className="detail-image"><SceneArt /><span className="placeholder-tag">ILLUSTRATION PLACEHOLDER · 非作品画面</span></div><div className="detail-body"><p className="eyebrow">VISUAL / COMING SOON</p><h3>影像演示片段待上线</h3><p>后续替换为获得公开许可的真实视频、封面和制作说明。不会使用虚构片长，也不会设置无法播放的假按钮。</p><span className="small-note">只展示已确认可公开的演示内容</span></div></div>
+          <div className="detail-panel detail-film"><div className="detail-image detail-film-frames"><span className="film-detail-number">分镜 / 02</span><div className="detail-film-strip"><span className="home-film-frame frame-one"><i /></span><span className="home-film-frame frame-two"><i /></span><span className="home-film-frame frame-three"><i /></span></div><span className="placeholder-tag">分镜排版示意 · 非正式作品</span><span className="detail-film-doodle"><Doodle kind="film" size={76} interactive /></span></div><div className="detail-body"><p className="eyebrow">AI 影像制作</p><h3>让想象进入画面</h3><p>人物、场景、分镜与演示片段会在这里逐步整理。正式上线前，只展示已确认可公开的素材，不使用虚构作品信息。</p><span className="small-note">只展示已确认可公开的演示内容</span></div></div>
         </section>
 
         </div>}
