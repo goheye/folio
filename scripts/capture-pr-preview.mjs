@@ -42,7 +42,7 @@ try {
     if (surfaceStyle.overflowY === 'hidden') throw Error('Home content is clipped by a fixed-height container');
     const clapper = page.locator('.home-film-doodle .doodle-trigger');
     await clapper.click();
-    const snapAnimations = await page.locator('.doodle-film-clapper').evaluate(el => el.getAnimations().length);
+    const snapAnimations = await page.locator('.home-film-doodle .doodle-film-clapper').evaluate(el => el.getAnimations().length);
     if (snapAnimations < 1) throw Error('Clapperboard SVG click animation did not start');
     await page.screenshot({path:'preview-screenshots/'+device+'-home.png',fullPage:true,animations:'disabled'});
     for (const section of ['scripts','films','journal','about']) {
