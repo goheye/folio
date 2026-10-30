@@ -149,7 +149,7 @@ export default function BookCharacterIcon({
                 strokeLinecap="round"
               />
               <path
-                d="M70 139 Q104 126 137 137 M73 157 Q106 145 139 155"
+                d="M70 158 Q104 148 137 157 M74 172 Q108 162 140 171"
                 fill="none"
                 stroke="#080808"
                 strokeWidth="4.5"
@@ -174,7 +174,7 @@ export default function BookCharacterIcon({
                 strokeLinecap="round"
               />
               <path
-                d="M183 137 Q216 126 250 139 M181 155 Q214 145 247 157"
+                d="M183 157 Q216 148 250 158 M180 171 Q214 162 246 172"
                 fill="none"
                 stroke="#080808"
                 strokeWidth="4.5"
