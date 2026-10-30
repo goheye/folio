@@ -48,7 +48,7 @@ export default function LandingCover({
   };
 
   return (
-    <main className="landing-cover" aria-label="如雪个人作品集封面">
+    <main className="landing-cover" aria-label="茹雪个人作品集封面">
       <div className="cover-stage">
         {entries.map((entry) => (
           <div className={'cover-entry ' + entry.className} key={entry.section}>
@@ -86,7 +86,7 @@ export default function LandingCover({
               <path d="M47 17 C53 9 59 5 66 4 C62 13 56 18 47 17 Z" />
             </svg>
           </div>
-          <h1 id="cover-title">如雪的创作空间</h1>
+          <h1 id="cover-title">茹雪的创作空间</h1>
           <p className="cover-role">编剧 <span>·</span> AI 影像创作者</p>
           <button
             className="cover-enter"
