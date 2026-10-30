@@ -7,6 +7,7 @@ type PortfolioSection = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 const NOTE_WRITING_DURATION_MS = 1700;
 const SCRIPT_PAGE_TURN_DURATION_MS = 1050;
 const FILM_SEQUENCE_DURATION_MS = 2450;
+const ABOUT_BLINK_DURATION_MS = 1300;
 
 const entries: {
   section: PortfolioSection;
@@ -27,7 +28,7 @@ export default function LandingCover({
   onNavigate: (section: PortfolioSection) => void;
 }) {
   const [writingRun, setWritingRun] = useState(0);
-  const [writingSection, setWritingSection] = useState<'scripts' | 'journal' | null>(null);
+  const [writingSection, setWritingSection] = useState<'scripts' | 'journal' | 'about' | null>(null);
   const [filmRecording, setFilmRecording] = useState(false);
   const writingTimer = useRef<number | null>(null);
 
@@ -56,12 +57,16 @@ export default function LandingCover({
       ? 'journal'
       : section === 'scripts'
         ? 'scripts'
-        : null;
+        : section === 'about'
+          ? 'about'
+          : null;
     const writingDuration = writingKind === 'journal'
       ? NOTE_WRITING_DURATION_MS
       : writingKind === 'scripts'
         ? SCRIPT_PAGE_TURN_DURATION_MS
-        : null;
+        : writingKind === 'about'
+          ? ABOUT_BLINK_DURATION_MS
+          : null;
     if (writingKind !== null && writingDuration !== null) {
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       setWritingSection(reduceMotion ? null : writingKind);
@@ -115,6 +120,28 @@ export default function LandingCover({
                       width={1254}
                       height={1254}
                       decoding="sync"
+                      draggable={false}
+                    />
+                  </span>
+                ) : entry.section === 'about' ? (
+                  <span
+                    className={'cover-profile-icon' + (writingSection === 'about' ? ' is-blinking' : '')}
+                    aria-hidden="true"
+                  >
+                    <img
+                      className="cover-profile-frame"
+                      src="/icons/about-profile-original.png"
+                      alt=""
+                      width={1254}
+                      height={1254}
+                      draggable={false}
+                    />
+                    <img
+                      className="cover-profile-eyes"
+                      src="/icons/about-eyes-closed-overlay.png"
+                      alt=""
+                      width={1254}
+                      height={1254}
                       draggable={false}
                     />
                   </span>

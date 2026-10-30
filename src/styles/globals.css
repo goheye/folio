@@ -990,3 +990,41 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .cover-film-lid { transition: none; }
   .cover-entry-film .cover-film-icon.is-recording .cover-film-led { animation: none; }
 }
+
+/* About cover: the original PNG remains pixel-identical and is always the base.
+   Two short eye-only overlays make a double blink; no full-icon redraw or changes
+   to the paper, fold, portrait and text details in the uploaded original. */
+.cover-entry-profile .cover-icon-pad {
+  background: #fff;
+  overflow: hidden;
+}
+.cover-profile-icon {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.cover-profile-frame,
+.cover-profile-eyes {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+.cover-profile-eyes { opacity: 0; }
+.cover-profile-icon.is-blinking .cover-profile-eyes {
+  animation: cover-profile-double-blink 1.12s ease-in-out both;
+}
+@keyframes cover-profile-double-blink {
+  0%, 7%, 21%, 29%, 48%, 66%, 100% { opacity: 0; }
+  13%, 17%, 54%, 59% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-profile-icon.is-blinking .cover-profile-eyes { animation: none; }
+}

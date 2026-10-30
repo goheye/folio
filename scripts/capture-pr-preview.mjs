@@ -46,6 +46,24 @@ try {
     if (await page.locator('.cover-entry-script .doodle-script').count() !== 0) {
       throw Error('Script cover entry must not use a reconstructed SVG in place of the supplied PNG');
     }
+    const profileImages = await page.locator('.cover-entry-profile .cover-profile-icon img').evaluateAll(images =>
+      images.map(img => ({
+        src: img.getAttribute('src'), complete: img.complete,
+        width: img.naturalWidth, height: img.naturalHeight
+      }))
+    );
+    if (profileImages.length !== 2 ||
+        profileImages[0].src !== '/icons/about-profile-original.png' ||
+        profileImages[1].src !== '/icons/about-eyes-closed-overlay.png' ||
+        profileImages.some(img => !img.complete || img.width !== 1254 || img.height !== 1254) ||
+        await page.locator('.cover-entry-profile .doodle-profile').count() !== 0) {
+      throw Error('About icon must retain the exact 1254x1254 uploaded image with a separate blink overlay: ' +
+        JSON.stringify(profileImages));
+    }
+    if (await page.locator('.cover-entry-profile .cover-profile-eyes').evaluate(el =>
+      getComputedStyle(el).opacity !== '0')) {
+      throw Error('Closed-eye overlay must be invisible before activation');
+    }
     const coverFilmImages = await page.locator('.cover-entry-film .cover-film-part').evaluateAll(images =>
       images.map(img => ({
         src: img.getAttribute('src'), complete: img.complete,
@@ -202,6 +220,21 @@ try {
         }
         // No second click: the same click navigates after the blinking interval.
         await page.locator('#films').waitFor({state:'visible', timeout:4000});
+      } else if (section === 'about') {
+        await page.locator('.cover-entry-profile .cover-profile-icon.is-blinking').waitFor({state:'visible'});
+        const blink = await page.locator('.cover-entry-profile .cover-profile-eyes').evaluate(el => ({
+          count: el.getAnimations().length,
+          name: getComputedStyle(el).animationName,
+          duration: getComputedStyle(el).animationDuration
+        }));
+        if (blink.count < 1 || blink.name !== 'cover-profile-double-blink' ||
+            blink.duration !== '1.12s') {
+          throw Error('About should start a two-blink overlay animation on first click: ' +
+            JSON.stringify(blink));
+        }
+        await page.waitForTimeout(166);
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-about-blink.png',fullPage:false});
+        await page.locator('#about').waitFor({state:'visible',timeout:4000});
       } else {
         await page.locator('#'+section).waitFor({state:'visible'});
       }
