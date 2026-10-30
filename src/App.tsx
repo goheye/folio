@@ -10,7 +10,7 @@ function currentHash(): SectionId {
   return sections.includes(hash as SectionId) ? hash as SectionId : 'cover';
 }
 const navigation = [
-  { label: '首页', href: '#home' },
+  { label: '封面', href: '#cover' },
   { label: '剧本', href: '#scripts' },
   { label: 'AI 影像', href: '#films' },
   { label: '创作手记', href: '#journal' },
