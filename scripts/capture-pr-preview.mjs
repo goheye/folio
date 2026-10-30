@@ -46,6 +46,16 @@ try {
     if (await page.locator('.cover-entry-script .doodle-script').count() !== 0) {
       throw Error('Script cover entry must not use a reconstructed SVG in place of the supplied PNG');
     }
+    const coverFilmImage = await page.locator('.cover-entry-film .cover-film-frame').evaluate(img => ({
+      src: img.getAttribute('src'), complete: img.complete,
+      width: img.naturalWidth, height: img.naturalHeight,
+    }));
+    if (coverFilmImage.src !== '/icons/film-clapper-original.png' || !coverFilmImage.complete ||
+        coverFilmImage.width !== 1254 || coverFilmImage.height !== 1254 ||
+        await page.locator('.cover-entry-film .doodle-film').count() !== 0) {
+      throw Error('Film cover entry must use the untouched original 1254x1254 PNG, not redrawn SVG: ' +
+        JSON.stringify(coverFilmImage));
+    }
     await page.screenshot({path:'preview-screenshots/'+device+'-cover-fold.png',fullPage:false,animations:'disabled'});
     if (!coverMetrics.hasCover || coverMetrics.sideRailCount !== 0 || coverMetrics.entryCount !== 4) {
       throw Error('Cover must be a separate entrance with four clickable creative entries');
@@ -146,6 +156,21 @@ try {
         await page.waitForTimeout(620);
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-script-page-turn.png',fullPage:false});
         await page.locator('#scripts').waitFor({state:'visible', timeout:4000});
+      } else if (section === 'films') {
+        await page.locator('.cover-entry-film .cover-film-icon.is-snapping').waitFor({state:'visible'});
+        const filmMotion = await page.locator('.cover-entry-film .cover-film-frame').evaluate(el => ({
+          count: el.getAnimations().length,
+          name: getComputedStyle(el).animationName,
+          duration: getComputedStyle(el).animationDuration,
+        }));
+        if (filmMotion.count < 1 || filmMotion.name !== 'cover-film-clack' ||
+            filmMotion.duration !== '0.42s') {
+          throw Error('Original film clapper PNG must animate before entering films: ' +
+            JSON.stringify(filmMotion));
+        }
+        await page.waitForTimeout(180);
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-film-clack.png',fullPage:false});
+        await page.locator('#films').waitFor({state:'visible', timeout:4000});
       } else {
         await page.locator('#'+section).waitFor({state:'visible'});
       }
