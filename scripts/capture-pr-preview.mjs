@@ -7,19 +7,33 @@ try {
     const page = await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
     await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
     await page.evaluate(() => document.fonts.ready);
+
+    const coverMetrics = await page.evaluate(() => ({
+      scrollHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight,
+      hasCover: Boolean(document.querySelector('.landing-cover')),
+      sideRailCount: document.querySelectorAll('.side-rail').length,
+      entryCount: document.querySelectorAll('.cover-entry').length,
+      horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
+    }));
+    console.log(device + ' cover metrics:', JSON.stringify(coverMetrics));
+    await page.screenshot({path:'preview-screenshots/'+device+'-cover-fold.png',fullPage:false,animations:'disabled'});
+    if (!coverMetrics.hasCover || coverMetrics.sideRailCount !== 0 || coverMetrics.entryCount !== 4) {
+      throw Error('Cover must be a separate entrance with four clickable creative entries');
+    }
+    if (coverMetrics.horizontalOverflow) throw Error('Cover has horizontal overflow: ' + JSON.stringify(coverMetrics));
+    if (device === 'desktop' && coverMetrics.scrollHeight > coverMetrics.viewportHeight + 2) {
+      throw Error('Desktop cover should fit the viewport: ' + JSON.stringify(coverMetrics));
+    }
+
+    await page.locator('[data-cover-action="home"]').click();
+    await page.locator('.side-rail').waitFor({state:'visible'});
     const homeMetrics = await page.evaluate(() => ({
       scrollHeight: document.documentElement.scrollHeight,
       viewportHeight: window.innerHeight,
       workCards: document.querySelectorAll('.home-work-card').length,
       legacyHomeSections: document.querySelectorAll('.gateway, .featured').length,
       horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
-      boxes: ['.workspace-layout','.workspace-main','.site-header','.surface-stage','.site-main-home','.home-hero','.footer','.side-rail'].map(selector => {
-        const element = document.querySelector(selector);
-        if (!element) return {selector,missing:true};
-        const rect = element.getBoundingClientRect();
-        const style = getComputedStyle(element);
-        return {selector,top:Math.round(rect.top),bottom:Math.round(rect.bottom),height:Math.round(rect.height),minHeight:style.minHeight,flex:style.flex};
-      }),
     }));
     console.log(device + ' home metrics:', JSON.stringify(homeMetrics));
     await page.screenshot({path:'preview-screenshots/'+device+'-home-fold.png',fullPage:false,animations:'disabled'});
@@ -50,6 +64,15 @@ try {
       await page.locator('#'+section).waitFor({state:'visible'});
       if (await page.locator('.rail-nav a[aria-current="page"]').getAttribute('href') !== '#'+section) throw Error('Active nav wrong');
       await page.screenshot({path:'preview-screenshots/'+device+'-'+section+'.png',fullPage:true,animations:'disabled'});
+    }
+    await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
+    for (const section of ['scripts','films','journal','about']) {
+      await page.locator('[data-cover-action="'+section+'"]').click();
+      await page.locator('#'+section).waitFor({state:'visible'});
+      if (await page.locator('.rail-nav a[aria-current="page"]').getAttribute('href') !== '#'+section) {
+        throw Error('Cover entry did not open the matching workspace section: ' + section);
+      }
+      await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
     }
     if (device==='desktop') {
       await page.locator('.rail-nav a[href="#home"]').click();
