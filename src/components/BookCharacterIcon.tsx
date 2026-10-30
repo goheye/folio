@@ -73,7 +73,7 @@ export default function BookCharacterIcon({
           {/* The original closed-book thickness and binding stay full-size. */}
           <g className="book-character-closed-base">
             <path
-              d="M47 91 C39 96 36 107 42 118 L91 207 C98 220 109 224 123 220 L294 174 Q304 171 299 159 L291 143 L111 190 Z"
+              d="M47 91 C39 96 36 107 42 118 L91 220 C98 240 109 249 124 245 L299 199 Q309 196 303 183 L293 158 L122 204 Z"
               fill="#fff"
               stroke="#080808"
               strokeWidth="8"
@@ -81,21 +81,21 @@ export default function BookCharacterIcon({
               strokeLinecap="round"
             />
             <path
-              d="M107 202 L290 155 M114 217 L297 169"
+              d="M124 219 L297 173 M124 234 L301 188"
               fill="none"
               stroke="#080808"
               strokeWidth="4.5"
               strokeLinecap="round"
             />
             <path
-              d="M57 70 C40 79 35 94 43 110 L91 196 C98 208 109 212 122 204"
+              d="M57 70 C40 79 35 94 43 110 L91 220 C98 240 109 249 124 245"
               fill="none"
               stroke="#080808"
               strokeWidth="8"
               strokeLinecap="round"
             />
             <path
-              d="M83 65 C72 75 70 88 77 101 L126 189"
+              d="M83 65 C72 75 70 88 77 101 L126 230"
               fill="none"
               stroke="#080808"
               strokeWidth="7"
@@ -107,7 +107,7 @@ export default function BookCharacterIcon({
           <g className="book-character-open">
             <g className="book-character-open-block">
               <path
-                d="M42 174 Q101 157 160 182 Q219 157 278 174 L273 207 Q216 190 160 214 Q104 190 47 207 Z"
+                d="M42 174 Q101 157 160 182 Q219 157 278 174 L273 230 Q216 212 160 238 Q104 212 47 230 Z"
                 fill="#fff"
                 stroke="#080808"
                 strokeWidth="8"
@@ -115,7 +115,7 @@ export default function BookCharacterIcon({
                 strokeLinecap="round"
               />
               <path
-                d="M49 187 Q105 169 160 194 Q215 169 271 187 M49 198 Q105 180 160 205 Q215 180 271 198"
+                d="M49 190 Q105 172 160 196 Q215 172 271 190 M49 210 Q105 192 160 216 Q215 192 271 210"
                 fill="none"
                 stroke="#080808"
                 strokeWidth="4.5"
