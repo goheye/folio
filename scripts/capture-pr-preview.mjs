@@ -70,10 +70,10 @@ try {
       await page.locator('[data-cover-action="'+section+'"]').click();
       if (section === 'journal') {
         await page.locator('.cover-entry-journal .doodle-note.is-writing').waitFor({state:'visible'});
-        const penAnimationStarted = await page.locator('.cover-entry-journal .doodle-note-pen').evaluate(
-          (el) => el.getAnimations().some((animation) => animation.animationName === 'note-pen-write'),
-        );
-        if (!penAnimationStarted) throw Error('Notebook pen click animation did not start');
+        const penMotion = await page.locator('.cover-entry-journal .doodle-note-pen animateMotion').count();
+        if (penMotion !== 1) throw Error('Notebook pen SVG motion did not start');
+        const motionDuration = await page.locator('.cover-entry-journal .doodle-note-pen animateMotion').getAttribute('dur');
+        if (motionDuration !== '1.3s') throw Error('Notebook pen motion duration changed unexpectedly');
         await page.waitForTimeout(360);
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing.png',fullPage:false});
         await page.locator('#journal').waitFor({state:'visible', timeout:4000});

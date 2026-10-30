@@ -843,17 +843,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 
 
 /* Click-to-write motion for the hand-drawn notebook SVG. */
-.doodle-note .doodle-note-pen {
-  transform: translate(130px, 154px);
-  transform-box: view-box;
-  transform-origin: 0 0;
-}
 .doodle-note .doodle-note-line {
   stroke-dasharray: 100;
   stroke-dashoffset: 0;
-}
-.doodle-note.is-writing .doodle-note-pen {
-  animation: note-pen-write 1.3s linear both;
 }
 .doodle-note.is-writing .doodle-note-line-one {
   animation: note-line-write .27s ease .13s both;
@@ -863,16 +855,6 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 }
 .doodle-note.is-writing .doodle-note-line-three {
   animation: note-line-write .27s ease .81s both;
-}
-@keyframes note-pen-write {
-  0% { transform: translate(130px, 154px); }
-  10% { transform: translate(74px, 109px); }
-  30% { transform: translate(147px, 94px); }
-  36% { transform: translate(80px, 131px); }
-  56% { transform: translate(138px, 116px); }
-  62% { transform: translate(87px, 155px); }
-  82% { transform: translate(155px, 139px); }
-  100% { transform: translate(130px, 154px); }
 }
 @keyframes note-line-write {
   from { stroke-dashoffset: 100; opacity: .25; }

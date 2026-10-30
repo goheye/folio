@@ -8,7 +8,6 @@ type DoodleProps = {
   interactive?: boolean;
   active?: boolean;
   animationKey?: number;
-  onAnimationEnd?: () => void;
 };
 
 /**
@@ -23,7 +22,6 @@ export default function Doodle({
   interactive = false,
   active = false,
   animationKey = 0,
-  onAnimationEnd,
 }: DoodleProps) {
   const [snapCount, setSnapCount] = useState(0);
   const filterId = useId().replace(/:/g, '');
@@ -47,11 +45,6 @@ export default function Doodle({
       strokeLinecap="round"
       strokeLinejoin="round"
       focusable="false"
-      onAnimationEnd={(event) => {
-        if (kind === 'note' && event.animationName === 'note-pen-write') {
-          onAnimationEnd?.();
-        }
-      }}
     >
       {kind === 'book' && <>
         <path className="doodle-book-outline" d="M7.5 14 Q17.5 8.5 30.2 16.5 Q41.2 9.5 54.5 13.8 L53 48.5 Q41.5 45.5 30 52 Q19 46 8 50 Z" />
@@ -112,7 +105,20 @@ export default function Doodle({
         <g className="doodle-note-accents" stroke="#EF332D" strokeWidth="7" strokeLinecap="round">
           <path d="M143 127 L151 136 M155 119 L160 131" />
         </g>
-        <g className="doodle-note-pen" strokeWidth="7.2">
+        <g
+          className="doodle-note-pen"
+          strokeWidth="7.2"
+          transform={active ? undefined : 'translate(130 154)'}
+        >
+          {active && <animateMotion
+            begin="0s"
+            dur="1.3s"
+            fill="freeze"
+            calcMode="linear"
+            keyTimes="0;0.1;0.3;0.36;0.56;0.62;0.82;1"
+            keyPoints="0;0.161;0.328;0.5;0.634;0.778;0.935;1"
+            path="M130 154 L74 109 L147 94 L80 131 L138 116 L87 155 L155 139 L130 154"
+          />}
           <path d="M0 0 L12 -18 L70 -109 Q74 -116 80 -112 L93 -104 Q98 -100 94 -94 L34 -7 L17 5 Q7 10 0 0 Z" fill="#fff" />
           <path d="M20 -15 L79 -104" stroke="#fff" strokeWidth="4.8" />
           <path d="M84 -89 L99 -111" strokeWidth="5.5" />

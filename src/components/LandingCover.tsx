@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Doodle, { type DoodleKind } from './Doodle';
 
@@ -24,19 +24,27 @@ export default function LandingCover({
 }) {
   const [writingRun, setWritingRun] = useState(0);
   const [writingActive, setWritingActive] = useState(false);
+  const writingTimer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (writingTimer.current !== null) window.clearTimeout(writingTimer.current);
+  }, []);
 
   const handleEntryClick = (section: PortfolioSection) => {
+    if (writingTimer.current !== null) window.clearTimeout(writingTimer.current);
     if (section === 'journal') {
-      setWritingActive(true);
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      setWritingActive(!reduceMotion);
       setWritingRun((run) => run + 1);
+      writingTimer.current = window.setTimeout(() => {
+        setWritingActive(false);
+        writingTimer.current = null;
+        onNavigate('journal');
+      }, reduceMotion ? 0 : 1300);
       return;
     }
-    onNavigate(section);
-  };
-
-  const handleWritingComplete = () => {
     setWritingActive(false);
-    onNavigate('journal');
+    onNavigate(section);
   };
 
   return (
@@ -49,7 +57,7 @@ export default function LandingCover({
               type="button"
               data-cover-action={entry.section}
               onClick={() => handleEntryClick(entry.section)}
-              disabled={entry.section === 'journal' && writingActive}
+              disabled={writingActive}
               aria-busy={entry.section === 'journal' && writingActive}
               aria-label={'进入' + entry.title + '栏目'}
             >
@@ -59,7 +67,6 @@ export default function LandingCover({
                   size={104}
                   active={entry.section === 'journal' && writingActive}
                   animationKey={writingRun}
-                  onAnimationEnd={entry.section === 'journal' ? handleWritingComplete : undefined}
                 />
               </span>
               <span className="cover-entry-caption">
@@ -85,6 +92,7 @@ export default function LandingCover({
             className="cover-enter"
             type="button"
             data-cover-action="home"
+            disabled={writingActive}
             onClick={() => onNavigate('home')}
           >
             进入作品集 <ArrowRight size={18} aria-hidden="true" />
