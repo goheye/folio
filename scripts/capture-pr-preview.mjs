@@ -68,7 +68,18 @@ try {
     await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
     for (const section of ['scripts','films','journal','about']) {
       await page.locator('[data-cover-action="'+section+'"]').click();
-      await page.locator('#'+section).waitFor({state:'visible'});
+      if (section === 'journal') {
+        await page.locator('.cover-entry-journal .doodle-note.is-writing').waitFor({state:'visible'});
+        const penAnimationStarted = await page.locator('.cover-entry-journal .doodle-note-pen').evaluate(
+          (el) => el.getAnimations().some((animation) => animation.animationName === 'note-pen-write'),
+        );
+        if (!penAnimationStarted) throw Error('Notebook pen click animation did not start');
+        await page.waitForTimeout(360);
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing.png',fullPage:false});
+        await page.locator('#journal').waitFor({state:'visible', timeout:4000});
+      } else {
+        await page.locator('#'+section).waitFor({state:'visible'});
+      }
       if (await page.locator('.rail-nav a[aria-current="page"]').getAttribute('href') !== '#'+section) {
         throw Error('Cover entry did not open the matching workspace section: ' + section);
       }

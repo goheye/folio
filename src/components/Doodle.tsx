@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 export type DoodleKind = 'book' | 'script' | 'film' | 'note' | 'star' | 'home' | 'person' | 'profile';
 
@@ -6,6 +6,9 @@ type DoodleProps = {
   kind: DoodleKind;
   size?: number;
   interactive?: boolean;
+  active?: boolean;
+  animationKey?: number;
+  onAnimationEnd?: () => void;
 };
 
 /**
@@ -14,22 +17,41 @@ type DoodleProps = {
  * Keep these expressive marks local to navigation and small interaction moments,
  * rather than turning the entire site into an illustration.
  */
-export default function Doodle({ kind, size = 52, interactive = false }: DoodleProps) {
+export default function Doodle({
+  kind,
+  size = 52,
+  interactive = false,
+  active = false,
+  animationKey = 0,
+  onAnimationEnd,
+}: DoodleProps) {
   const [snapCount, setSnapCount] = useState(0);
+  const filterId = useId().replace(/:/g, '');
+  const isActive = interactive || active;
+
   const graphic = (
     <svg
-      key={interactive ? snapCount : undefined}
-      className={'doodle-svg doodle-' + kind + (interactive ? ' doodle-active' : '')}
+      key={kind === 'note' && active ? animationKey : interactive ? snapCount : undefined}
+      className={
+        'doodle-svg doodle-' + kind +
+        (isActive ? ' doodle-active' : '') +
+        (active ? ' is-writing' : '')
+      }
       width={size}
       height={size}
-      viewBox="0 0 62 62"
+      viewBox={kind === 'note' ? '0 0 240 240' : '0 0 62 62'}
       aria-hidden="true"
       fill="none"
       stroke="currentColor"
-      strokeWidth="3.5"
+      strokeWidth={kind === 'note' ? 7.5 : 3.5}
       strokeLinecap="round"
       strokeLinejoin="round"
       focusable="false"
+      onAnimationEnd={(event) => {
+        if (kind === 'note' && event.animationName === 'note-pen-write') {
+          onAnimationEnd?.();
+        }
+      }}
     >
       {kind === 'book' && <>
         <path className="doodle-book-outline" d="M7.5 14 Q17.5 8.5 30.2 16.5 Q41.2 9.5 54.5 13.8 L53 48.5 Q41.5 45.5 30 52 Q19 46 8 50 Z" />
@@ -64,10 +86,40 @@ export default function Doodle({ kind, size = 52, interactive = false }: DoodleP
         <path d="M55 5.5 L58 7 M45 4 L45 7.5 M35.5 7.5 L38 10" strokeWidth="2.8" />
       </>}
       {kind === 'note' && <>
-        <path d="M12.5 8.5 Q29 5.5 49 10.5 L48 52.5 Q30 50 13 55 Z" />
-        <path d="M18 18.5 L39 18 M18 25.5 L41 25 M18 32 L34.5 32" />
-        <path d="M22 40 L22.7 40.5 M35.5 39.5 L36.2 40" strokeWidth="4.8" />
-        <path d="M23 46 Q29.5 51 36 45.5 M9 13 L6.5 11 M52 15 L56 11.5" />
+        <defs>
+          <filter id={filterId} x="-12%" y="-12%" width="124%" height="124%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" seed="13" result="grain" />
+            <feDisplacementMap in="SourceGraphic" in2="grain" scale="0.9" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        <g className="doodle-note-ink" filter={'url(#' + filterId + ')'}>
+          <g className="doodle-note-pages">
+            <path d="M43 81 L30 84 Q25 85 27 92 L59 202 Q61 210 69 207 L179 184 Q185 182 183 176 L151 66" fill="#fff" />
+            <path d="M52 59 L40 62 Q34 64 36 72 L70 194 Q72 201 80 198 L187 175 Q193 173 191 166 L158 45" fill="#fff" />
+            <path d="M50 40 Q48 33 56 31 L158 13 Q166 12 169 20 L198 145 Q200 153 193 156 L178 177 Q174 181 166 182 L85 196 Q77 198 75 190 Z" fill="#fff" />
+            <path d="M193 156 L166 164 L166 182" fill="none" />
+          </g>
+          <g className="doodle-note-face">
+            <path d="M91 60 Q89 70 93 78 M132 52 Q130 64 134 73" strokeWidth="8.5" />
+            <path d="M108 85 L120 77" strokeWidth="7.5" />
+          </g>
+          <g className="doodle-note-writing">
+            <path className="doodle-note-line doodle-note-line-one" pathLength="100" d="M74 109 Q108 99 147 92" strokeWidth="7.5" />
+            <path className="doodle-note-line doodle-note-line-two" pathLength="100" d="M80 131 Q108 122 138 116" strokeWidth="7.5" />
+            <path className="doodle-note-line doodle-note-line-three" pathLength="100" d="M87 155 Q119 146 155 139" strokeWidth="7.5" />
+          </g>
+        </g>
+        <g className="doodle-note-accents" stroke="#EF332D" strokeWidth="7" strokeLinecap="round">
+          <path d="M143 127 L151 136 M155 119 L160 131" />
+        </g>
+        <g className="doodle-note-pen" strokeWidth="7.2">
+          <path d="M0 0 L12 -18 L70 -109 Q74 -116 80 -112 L93 -104 Q98 -100 94 -94 L34 -7 L17 5 Q7 10 0 0 Z" fill="#fff" />
+          <path d="M20 -15 L79 -104" stroke="#fff" strokeWidth="4.8" />
+          <path d="M84 -89 L99 -111" strokeWidth="5.5" />
+          <path d="M70 -109 L79 -126 Q83 -132 89 -128 L101 -120 Q106 -116 102 -109 L94 -94" fill="#EF332D" />
+          <path d="M0 0 L12 -18 L22 -10 L10 7 Q5 10 0 0 Z" fill="#fff" />
+          <path d="M0 0 L8 5 L10 7" fill="none" strokeWidth="4.2" />
+        </g>
       </>}
       {kind === 'profile' && <>
         <path d="M13 7.5 Q12 7 16 6.5 L43 6 L54 17 L54 51 Q54 55 50 55 L15 56 Q11 56 11 52 L10 12 Q10 8 13 7.5 Z" />

@@ -762,7 +762,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-entry-script:hover .doodle-script { animation: cover-paper-wiggle .46s ease; }
 .cover-entry-profile:hover .doodle-profile { animation: cover-profile-bob .42s ease; }
 .cover-entry-film:hover .doodle-film-clapper { animation: clapper-snap .38s cubic-bezier(.22,.78,.24,1.25); }
-.cover-entry-journal:hover .doodle-note { animation: note-wiggle .4s ease; }
+.cover-entry-journal:hover .doodle-note-pages { animation: note-pages-bob .38s ease; }
 @keyframes cover-paper-wiggle {
   0%,100% { transform: rotate(0); }
   35% { transform: rotate(-5deg) translateY(-1px); }
@@ -839,4 +839,50 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .cover-entry-button:hover .cover-icon-pad,
   .cover-entry-button:focus-visible .cover-icon-pad,
   .cover-enter:hover { transform: none; }
+}
+
+
+/* Click-to-write motion for the hand-drawn notebook SVG. */
+.doodle-note .doodle-note-pen {
+  transform: translate(130px, 154px);
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+.doodle-note .doodle-note-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+.doodle-note.is-writing .doodle-note-pen {
+  animation: note-pen-write 1.3s linear both;
+}
+.doodle-note.is-writing .doodle-note-line-one {
+  animation: note-line-write .27s ease .13s both;
+}
+.doodle-note.is-writing .doodle-note-line-two {
+  animation: note-line-write .27s ease .47s both;
+}
+.doodle-note.is-writing .doodle-note-line-three {
+  animation: note-line-write .27s ease .81s both;
+}
+@keyframes note-pen-write {
+  0% { transform: translate(130px, 154px); }
+  10% { transform: translate(74px, 109px); }
+  30% { transform: translate(147px, 94px); }
+  36% { transform: translate(80px, 131px); }
+  56% { transform: translate(138px, 116px); }
+  62% { transform: translate(87px, 155px); }
+  82% { transform: translate(155px, 139px); }
+  100% { transform: translate(130px, 154px); }
+}
+@keyframes note-line-write {
+  from { stroke-dashoffset: 100; opacity: .25; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes note-pages-bob {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  45% { transform: translateY(-2px) rotate(-1deg); }
+  75% { transform: translateY(1px) rotate(.6deg); }
+}
+.cover-entry-journal .cover-entry-button[aria-busy="true"] .cover-icon-pad {
+  transform: scale(.985);
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Doodle, { type DoodleKind } from './Doodle';
 
@@ -21,6 +22,23 @@ export default function LandingCover({
 }: {
   onNavigate: (section: PortfolioSection) => void;
 }) {
+  const [writingRun, setWritingRun] = useState(0);
+  const [writingActive, setWritingActive] = useState(false);
+
+  const handleEntryClick = (section: PortfolioSection) => {
+    if (section === 'journal') {
+      setWritingActive(true);
+      setWritingRun((run) => run + 1);
+      return;
+    }
+    onNavigate(section);
+  };
+
+  const handleWritingComplete = () => {
+    setWritingActive(false);
+    onNavigate('journal');
+  };
+
   return (
     <main className="landing-cover" aria-label="如雪个人作品集封面">
       <div className="cover-stage">
@@ -30,11 +48,19 @@ export default function LandingCover({
               className="cover-entry-button"
               type="button"
               data-cover-action={entry.section}
-              onClick={() => onNavigate(entry.section)}
+              onClick={() => handleEntryClick(entry.section)}
+              disabled={entry.section === 'journal' && writingActive}
+              aria-busy={entry.section === 'journal' && writingActive}
               aria-label={'进入' + entry.title + '栏目'}
             >
               <span className="cover-icon-pad">
-                <Doodle kind={entry.kind} size={104} />
+                <Doodle
+                  kind={entry.kind}
+                  size={104}
+                  active={entry.section === 'journal' && writingActive}
+                  animationKey={writingRun}
+                  onAnimationEnd={entry.section === 'journal' ? handleWritingComplete : undefined}
+                />
               </span>
               <span className="cover-entry-caption">
                 <strong>{entry.title}</strong>
