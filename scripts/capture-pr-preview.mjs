@@ -118,6 +118,36 @@ try {
         await page.waitForTimeout(220);
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing-late.png',fullPage:false});
         await page.locator('#journal').waitFor({state:'visible', timeout:4000});
+      } else if (section === 'scripts') {
+        await page.locator('.cover-entry-script .doodle-script.is-writing').waitFor({state:'visible'});
+        const motion = await page.locator('.cover-entry-script .doodle-script-pen animateMotion').evaluate(el => ({
+          duration: el.getAttribute('dur'),
+          calcMode: el.getAttribute('calcMode'),
+          path: el.getAttribute('path') || '',
+          keyTimes: (el.getAttribute('keyTimes') || '').split(';'),
+          keyPoints: (el.getAttribute('keyPoints') || '').split(';'),
+        }));
+        if (motion.duration !== '1.2s' || motion.calcMode !== 'linear' ||
+            !motion.path.includes('M-19 -7') || !motion.path.includes('L-1 -2')) {
+          throw Error('Script pen motion does not match the shorter hand-writing sequence: ' + JSON.stringify(motion));
+        }
+        if (motion.keyTimes.length !== 4 || motion.keyPoints.length !== 4) {
+          throw Error('Script pen must move through the first line, lift, and second line: ' + JSON.stringify(motion));
+        }
+        const lineTimings = await page.locator('.cover-entry-script .doodle-script-line').evaluateAll(lines =>
+          lines.map(line => {
+            const style = getComputedStyle(line);
+            return { name: style.animationName, duration: style.animationDuration, delay: style.animationDelay };
+          })
+        );
+        if (lineTimings.length !== 2 || lineTimings.some(line => line.name !== 'note-line-write')) {
+          throw Error('Script ink lines are not animated in sync with the pen: ' + JSON.stringify(lineTimings));
+        }
+        console.log(device + ' script line timings:', JSON.stringify(lineTimings));
+        await page.waitForTimeout(480);
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-script-writing-middle.png',fullPage:false});
+        await page.waitForTimeout(780);
+        await page.locator('#scripts').waitFor({state:'visible', timeout:4000});
       } else {
         await page.locator('#'+section).waitFor({state:'visible'});
       }
@@ -125,6 +155,17 @@ try {
         throw Error('Cover entry did not open the matching workspace section: ' + section);
       }
       await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
+    }
+    await page.locator('[data-cover-action="home"]').click();
+    await page.locator('.side-rail').waitFor({state:'visible'});
+    const coverNav = page.locator('.rail-nav a[href="#cover"]');
+    if (await coverNav.count() !== 1 || (await coverNav.innerText()).trim() !== '封面') {
+      throw Error('Inner navigation must expose a single 封面 entry linking to #cover');
+    }
+    await coverNav.click();
+    await page.locator('.landing-cover').waitFor({state:'visible'});
+    if (await page.locator('.side-rail').count() !== 0 || new URL(page.url()).hash !== '#cover') {
+      throw Error('The 封面 navigation entry must leave the workspace and return to the independent cover');
     }
     await page.locator('[data-cover-action="home"]').click();
     await page.locator('.side-rail').waitFor({state:'visible'});
