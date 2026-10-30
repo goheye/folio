@@ -4,6 +4,8 @@ import Doodle, { type DoodleKind } from './Doodle';
 
 type PortfolioSection = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 
+const NOTE_WRITING_DURATION_MS = 1700;
+
 const entries: {
   section: PortfolioSection;
   title: string;
@@ -40,7 +42,7 @@ export default function LandingCover({
         setWritingActive(false);
         writingTimer.current = null;
         onNavigate('journal');
-      }, reduceMotion ? 0 : 1300);
+      }, reduceMotion ? 0 : NOTE_WRITING_DURATION_MS);
       return;
     }
     setWritingActive(false);
