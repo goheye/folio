@@ -819,7 +819,10 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .cover-entry-film { grid-area: film; }
   .cover-entry-journal { grid-area: journal; }
   .cover-entry-button { gap: 6px; }
-  .cover-icon-pad { width: 92px; height: 92px; }
+  .cover-icon-pad,
+  .cover-entry-profile .cover-icon-pad,
+  .cover-entry-film .cover-icon-pad,
+  .cover-entry-journal .cover-icon-pad { width: 92px; height: 92px; }
   .cover-entry-button .doodle-svg { width: 76px; height: 76px; }
   .cover-entry-caption { min-height: 21px; gap: 5px; }
   .cover-entry-caption strong { font-size: 17px; }
