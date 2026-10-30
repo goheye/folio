@@ -112,19 +112,21 @@ export default function Doodle({
         >
           {active && <animateMotion
             begin="0s"
-            dur="1.3s"
+            dur="1.7s"
             fill="freeze"
             calcMode="linear"
-            keyTimes="0;0.1;0.3;0.36;0.56;0.62;0.82;1"
-            keyPoints="0;0.161;0.328;0.5;0.634;0.778;0.935;1"
-            path="M130 154 L74 109 L147 94 L80 131 L138 116 L87 155 L155 139 L130 154"
+            keyTimes="0;0.1294;0.1588;0.3588;0.4412;0.4647;0.6412;0.7235;0.7471;0.9471;1"
+            keyPoints="0;0.1582;0.1582;0.3232;0.4981;0.4981;0.63;0.777;0.777;0.9308;1"
+            path="M130 154 C116 144 92 122 74 109 Q108 99 147 92 C132 86 103 116 80 131 Q108 122 138 116 C126 108 104 144 87 155 Q119 146 155 139 C166 134 170 123 172 114"
           />}
-          <path d="M0 0 L12 -18 L70 -109 Q74 -116 80 -112 L93 -104 Q98 -100 94 -94 L34 -7 L17 5 Q7 10 0 0 Z" fill="#fff" />
-          <path d="M20 -15 L79 -104" stroke="#fff" strokeWidth="4.8" />
-          <path d="M84 -89 L99 -111" strokeWidth="5.5" />
-          <path d="M70 -109 L79 -126 Q83 -132 89 -128 L101 -120 Q106 -116 102 -109 L94 -94" fill="#EF332D" />
-          <path d="M0 0 L12 -18 L22 -10 L10 7 Q5 10 0 0 Z" fill="#fff" />
-          <path d="M0 0 L8 5 L10 7" fill="none" strokeWidth="4.2" />
+          <g transform="scale(.82)">
+            <path d="M0 0 L12 -18 L70 -109 Q74 -116 80 -112 L93 -104 Q98 -100 94 -94 L34 -7 L17 5 Q7 10 0 0 Z" fill="#fff" />
+            <path d="M20 -15 L79 -104" stroke="#fff" strokeWidth="4.8" />
+            <path d="M84 -89 L99 -111" strokeWidth="5.5" />
+            <path d="M70 -109 L79 -126 Q83 -132 89 -128 L101 -120 Q106 -116 102 -109 L94 -94" fill="#EF332D" />
+            <path d="M0 0 L12 -18 L22 -10 L10 7 Q5 10 0 0 Z" fill="#fff" />
+            <path d="M0 0 L8 5 L10 7" fill="none" strokeWidth="4.2" />
+          </g>
         </g>
       </>}
       {kind === 'profile' && <>
