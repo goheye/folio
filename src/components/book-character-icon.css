@@ -26,133 +26,93 @@
   width: 100%;
   height: 100%;
   overflow: visible;
-  transform: rotate(-1deg);
-  transition: transform 220ms ease;
 }
 
-.book-character-button:hover .book-character-svg {
-  transform: rotate(.5deg) translateY(-2px);
-}
-
-.book-character-button:active .book-character-svg {
-  transform: scale(.99);
-}
-
-/*
- * The cover and the open spread overlap during the transition.
- * The sleeping face belongs only to the closed cover; a short waking
- * expression fades away while the pages are unfolding underneath it.
- */
-.book-character-closed {
-  transform-box: view-box;
-  transform-origin: 50% 52%;
+/* Keep the closed book's original silhouette and thickness completely still. */
+.book-character-closed-base {
   opacity: 1;
-  transition:
-    opacity 760ms cubic-bezier(.35, 0, .2, 1),
-    transform 980ms cubic-bezier(.2, .72, .25, 1);
+  transition: opacity 520ms ease 420ms;
 }
 
-.book-character-button[data-open="true"] .book-character-closed {
+.book-character-button[data-open='true'] .book-character-closed-base {
   opacity: 0;
-  transform: translateY(5px) scale(.965) rotate(.35deg);
-  transition-delay: 280ms;
+}
+
+/* The open page block fades in behind the cover, keeping the book substantial. */
+.book-character-open {
+  opacity: 0;
+  transition: opacity 520ms ease 100ms;
   pointer-events: none;
 }
 
-.book-character-sleep-face {
+.book-character-button[data-open='true'] .book-character-open {
   opacity: 1;
-  transition: opacity 140ms ease;
 }
 
-.book-character-button[data-open="true"] .book-character-sleep-face {
-  opacity: 0;
-}
-
-.book-character-wake-face {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.book-character-button[data-open="true"] .book-character-wake-face {
-  animation: book-character-wake-and-release 1120ms cubic-bezier(.2, .72, .25, 1) 70ms both;
-}
-
-.book-character-sleep {
+.book-character-open-block {
   opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 180ms ease,
-    transform 260ms ease;
 }
 
-.book-character-button[data-open="true"] .book-character-sleep {
-  opacity: 0;
-  transform: translate(4px, -8px) scale(.94);
-}
-
-/* The open spread fades in slowly instead of replacing the closed icon abruptly. */
-.book-character-open {
-  transform-box: view-box;
-  transform-origin: 50% 52%;
-  opacity: 0;
-  transform: translateY(10px) scale(.94);
-  transition:
-    opacity 1120ms cubic-bezier(.22, .61, .36, 1),
-    transform 1320ms cubic-bezier(.18, .72, .24, 1);
-}
-
-.book-character-button[data-open="true"] .book-character-open {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  transition-delay: 70ms;
-}
-
-/*
- * Each page turns out from the center fold in 3D. A slight stagger and
- * long easing make it feel like paper opening, not two rigid doors.
- */
+/* Pages unfold from the center fold, slowly and with a slight natural stagger. */
 .book-character-page-left,
 .book-character-page-right {
   transform-box: fill-box;
-  opacity: .45;
   backface-visibility: hidden;
+  opacity: 0.62;
   transition:
-    transform 1480ms cubic-bezier(.18, .78, .22, 1),
-    opacity 900ms ease;
+    transform 1180ms cubic-bezier(0.2, 0.72, 0.2, 1),
+    opacity 640ms ease;
 }
 
 .book-character-page-left {
   transform-origin: 100% 50%;
-  transform: perspective(720px) rotateY(-82deg) scale(.78, .94);
+  transform: perspective(900px) rotateY(-86deg) scale(0.94, 0.98);
 }
 
 .book-character-page-right {
   transform-origin: 0% 50%;
-  transform: perspective(720px) rotateY(82deg) scale(.78, .94);
-  transition-delay: 90ms;
+  transform: perspective(900px) rotateY(86deg) scale(0.94, 0.98);
+  transition-delay: 70ms;
 }
 
-.book-character-button[data-open="true"] .book-character-page-left,
-.book-character-button[data-open="true"] .book-character-page-right {
+.book-character-button[data-open='true'] .book-character-page-left,
+.book-character-button[data-open='true'] .book-character-page-right {
   opacity: 1;
-  transform: perspective(720px) rotateY(0deg) scale(1, 1);
+  transform: perspective(900px) rotateY(0deg) scale(1, 1);
 }
 
-/* Fallback for engines without 3D transforms on SVG groups. */
-@supports not (transform: perspective(720px) rotateY(82deg)) {
-  .book-character-page-left {
-    transform: scaleX(.08) rotate(-1.5deg);
-  }
+/*
+ * The whole cover is one piece: the closed eyes travel with it.
+ * No eye-blink layer, no replacement face, and no scale applied to the book.
+ */
+.book-character-cover {
+  transform-box: fill-box;
+  transform-origin: 7% 53%;
+  transform: perspective(1000px) rotateY(0deg);
+  backface-visibility: hidden;
+  transition:
+    transform 1180ms cubic-bezier(0.18, 0.72, 0.2, 1),
+    opacity 320ms ease 820ms;
+}
 
-  .book-character-page-right {
-    transform: scaleX(.08) rotate(1.5deg);
-  }
+.book-character-button[data-open='true'] .book-character-cover {
+  transform: perspective(1000px) rotateY(-176deg);
+  opacity: 0;
+  transition-delay: 0ms, 780ms;
+}
 
-  .book-character-button[data-open="true"] .book-character-page-left,
-  .book-character-button[data-open="true"] .book-character-page-right {
-    transform: scaleX(1) rotate(0);
-  }
+/* Zzz disappears; the sleeping face itself is not animated independently. */
+.book-character-sleep-marks {
+  opacity: 1;
+  transform: translate(0, 0);
+  transition:
+    opacity 190ms ease,
+    transform 260ms ease;
+}
+
+.book-character-button[data-open='true'] .book-character-sleep-marks {
+  opacity: 0;
+  transform: translate(5px, -7px);
 }
 
 .book-character-sr-only {
@@ -167,54 +127,30 @@
   border: 0;
 }
 
-@keyframes book-character-wake-and-release {
-  0% {
-    opacity: 0;
-    transform: scaleY(.18) translateY(3px);
+@supports not (transform: perspective(900px) rotateY(86deg)) {
+  .book-character-page-left,
+  .book-character-page-right {
+    transform: scaleX(0.04);
   }
-  16% {
-    opacity: 1;
-    transform: scaleY(1.12) translateY(0);
+
+  .book-character-button[data-open='true'] .book-character-page-left,
+  .book-character-button[data-open='true'] .book-character-page-right {
+    transform: scaleX(1);
   }
-  30% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-  62% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scaleY(.96) translateY(-2px);
+
+  .book-character-button[data-open='true'] .book-character-cover {
+    transform: translateX(-120px) rotate(-10deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .book-character-svg,
-  .book-character-closed,
-  .book-character-sleep-face,
-  .book-character-sleep,
+  .book-character-closed-base,
   .book-character-open,
   .book-character-page-left,
-  .book-character-page-right {
+  .book-character-page-right,
+  .book-character-cover,
+  .book-character-sleep-marks {
     transition-duration: 1ms !important;
     transition-delay: 0ms !important;
-  }
-
-  .book-character-button[data-open="true"] .book-character-wake-face {
-    animation: none;
-    opacity: 0;
-  }
-
-  .book-character-button[data-open="true"] .book-character-open {
-    opacity: 1;
-    transform: none;
-  }
-
-  .book-character-button[data-open="true"] .book-character-page-left,
-  .book-character-button[data-open="true"] .book-character-page-right {
-    transform: none;
-    opacity: 1;
   }
 }
