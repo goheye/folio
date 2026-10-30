@@ -89,6 +89,24 @@ try {
 
     await page.locator('[data-cover-action="home"]').click();
     await page.locator('.side-rail').waitFor({state:'visible'});
+    // The About rail icon must use the original cover artwork and the same white frame.
+    const railProfile = await page.locator('.rail-nav a[href="#about"] .rail-profile-pad').evaluate(pad => ({
+      images: [...pad.querySelectorAll('.cover-profile-icon img')].map(img => ({
+        src: img.getAttribute('src'), loaded: img.complete && img.naturalWidth > 0,
+      })),
+      background: getComputedStyle(pad).backgroundColor,
+      width: Math.round(pad.getBoundingClientRect().width),
+      height: Math.round(pad.getBoundingClientRect().height),
+    }));
+    const railIconSize = device === 'desktop' ? 40 : 34;
+    if (railProfile.images.length !== 2 ||
+        railProfile.images[0].src !== '/icons/about-profile-original.png' ||
+        railProfile.images[1].src !== '/icons/about-eyes-closed-overlay.png' ||
+        railProfile.images.some(img => !img.loaded) ||
+        railProfile.background !== 'rgb(255, 255, 255)' ||
+        railProfile.width !== railIconSize || railProfile.height !== railIconSize) {
+      throw Error('About rail icon must match cover artwork and frame: '+JSON.stringify(railProfile));
+    }
     const homeMetrics = await page.evaluate(() => ({
       scrollHeight: document.documentElement.scrollHeight,
       viewportHeight: window.innerHeight,

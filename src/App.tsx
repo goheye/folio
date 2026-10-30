@@ -34,9 +34,11 @@ function RailCoverIcon({ section }: { section: SectionId }) {
   }
   if (section === 'journal') return <Doodle kind="note" size={35} />;
   if (section === 'about') {
-    return <span className="cover-profile-icon rail-profile-icon" aria-hidden="true">
+    return <span className="cover-icon-pad rail-profile-pad" aria-hidden="true">
+      <span className="cover-profile-icon rail-profile-icon">
       <img className="cover-profile-frame" src="/icons/about-profile-original.png" alt="" width={1254} height={1254} draggable={false} />
       <img className="cover-profile-eyes" src="/icons/about-eyes-closed-overlay.png" alt="" width={1254} height={1254} draggable={false} />
+      </span>
     </span>;
   }
   // The cover has four artwork entries, so its own return link keeps the home glyph.
