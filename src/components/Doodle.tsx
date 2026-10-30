@@ -72,29 +72,30 @@ export default function Doodle({
           <path d="M111 113 L112 128 M153 105 L154 120" />
           <path d="M127 141 L139 134" strokeWidth="8" />
         </g>
-        <g className="doodle-script-writing" strokeWidth="7.5">
-          <path className="doodle-script-line doodle-script-line-one" pathLength="100" d="M91 164 Q118 160 148 153" />
-          <path className="doodle-script-line doodle-script-line-two" pathLength="100" d="M96 182 Q119 178 144 173" />
-        </g>
-        <g
-          className="doodle-script-pen"
-          strokeWidth="5.5"
-          transform={active ? undefined : 'translate(144 151)'}
-          filter={'url(#' + filterId + ')'}
-        >
-          {active && <animateMotion
-            begin="0s"
-            dur="1.2s"
-            fill="freeze"
-            calcMode="linear"
-            keyTimes="0;0.42;0.62;1"
-            keyPoints="0;0.354;0.723;1"
-            path="M91 142 L148 132 C132 133 112 151 96 160 L144 151"
-          />}
-          <path d="M0 22 L8 8 L40 -28 Q43 -31 47 -28 L54 -22 Q57 -19 53 -15 L16 17 L4 25 Q0 26 0 22 Z" fill="#fff" />
-          <path d="M8 8 L16 17 M40 -28 L47 -20 M4 25 L16 17" fill="none" />
-          <path d="M44 -25 L54 -35" stroke="#C95B4D" strokeWidth="7" />
-        </g>
+        {active && <>
+          <g className="doodle-script-writing" strokeWidth="7.5">
+            <path className="doodle-script-line doodle-script-line-one" pathLength="100" d="M91 164 Q118 160 148 153" />
+            <path className="doodle-script-line doodle-script-line-two" pathLength="100" d="M96 182 Q119 178 144 173" />
+          </g>
+          <g
+            className="doodle-script-pen"
+            strokeWidth="5.5"
+            filter={'url(#' + filterId + ')'}
+          >
+            <animateMotion
+              begin="0s"
+              dur="1.2s"
+              fill="freeze"
+              calcMode="linear"
+              keyTimes="0;0.42;0.62;1"
+              keyPoints="0;0.354;0.723;1"
+              path="M91 142 L148 132 C132 133 112 151 96 160 L144 151"
+            />
+            <path d="M0 22 L8 8 L40 -28 Q43 -31 47 -28 L54 -22 Q57 -19 53 -15 L16 17 L4 25 Q0 26 0 22 Z" fill="#fff" />
+            <path d="M8 8 L16 17 M40 -28 L47 -20 M4 25 L16 17" fill="none" />
+            <path d="M44 -25 L54 -35" stroke="#C95B4D" strokeWidth="7" />
+          </g>
+        </>}
         <g className="doodle-script-accents" strokeWidth="5.5">
           <path d="M205 28 L210 16 M219 42 L230 36" stroke="#C95B4D" />
         </g>
