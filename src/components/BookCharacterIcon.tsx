@@ -4,17 +4,15 @@ import './book-character-icon.css';
 type BookCharacterIconProps = {
   size?: number;
   className?: string;
-  /** Start in the open state. */
   initiallyOpen?: boolean;
-  /** Pass open to control the state from a parent component. */
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   label?: string;
 };
 
 /**
- * A hand-drawn book character rendered entirely as inline SVG.
- * Click to wake it up and open the book; click again to let it fall asleep.
+ * Hand-drawn book icon. The closed cover keeps its sleeping face;
+ * opening the book turns that whole cover away from the viewer.
  */
 export default function BookCharacterIcon({
   size = 220,
@@ -64,7 +62,7 @@ export default function BookCharacterIcon({
             <feDisplacementMap
               in="SourceGraphic"
               in2="ink-noise"
-              scale="1.25"
+              scale="1.1"
               xChannelSelector="R"
               yChannelSelector="G"
             />
@@ -72,8 +70,8 @@ export default function BookCharacterIcon({
         </defs>
 
         <g filter={'url(#' + filterId + '-rough)'}>
-          <g className="book-character-closed">
-            {/* The page block and the lower edge of the closed book. */}
+          {/* The original closed-book thickness and binding stay full-size. */}
+          <g className="book-character-closed-base">
             <path
               d="M47 91 C39 96 36 107 42 118 L91 207 C98 220 109 224 123 220 L294 174 Q304 171 299 159 L291 143 L111 190 Z"
               fill="#fff"
@@ -87,16 +85,6 @@ export default function BookCharacterIcon({
               fill="none"
               stroke="#080808"
               strokeWidth="4.5"
-              strokeLinecap="round"
-            />
-
-            {/* The slightly rounded front cover, kept close to the supplied sketch. */}
-            <path
-              d="M48 83 C43 84 40 91 43 100 L91 188 C98 202 109 208 122 204 L293 158 Q302 155 296 144 L238 44 C232 33 223 29 211 32 L57 69 C49 71 46 77 48 83 Z"
-              fill="#fff"
-              stroke="#080808"
-              strokeWidth="8"
-              strokeLinejoin="round"
               strokeLinecap="round"
             />
             <path
@@ -113,45 +101,13 @@ export default function BookCharacterIcon({
               strokeWidth="7"
               strokeLinecap="round"
             />
-
-            {/* Sleeping face: visible only while the book is closed. */}
-            <g className="book-character-sleep-face" fill="none" stroke="#080808" strokeLinecap="round">
-              <path d="M132 124 Q148 139 164 123" strokeWidth="8" />
-              <path d="M204 106 Q220 121 236 104" strokeWidth="8" />
-              <path d="M175 133 L184 130" strokeWidth="6" />
-            </g>
-
-            {/* A brief waking expression appears on the cover as the pages begin to open. */}
-            <g className="book-character-wake-face" stroke="#080808" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M130 126 Q147 108 165 124 Q149 140 130 126 Z" fill="#fff" strokeWidth="5" />
-              <path d="M202 108 Q220 90 238 106 Q222 122 202 108 Z" fill="#fff" strokeWidth="5" />
-              <ellipse cx="148" cy="123" rx="4.5" ry="6.5" fill="#080808" stroke="none" />
-              <ellipse cx="220" cy="105" rx="4.5" ry="6.5" fill="#080808" stroke="none" />
-              <path d="M175 133 L184 130" fill="none" strokeWidth="5" />
-              <path d="M166 148 Q177 154 188 145" fill="none" strokeWidth="5" />
-            </g>
-
-            {/* Hand-drawn sleep marks. */}
-            <g className="book-character-sleep" fill="none" stroke="#080808" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M273 17 L300 10 L281 35 L306 29" />
-              <path d="M257 48 L280 42 L263 63 L286 58" strokeWidth="7" />
-            </g>
           </g>
 
+          {/* The open book is underneath the closed cover and unfolds from the spine. */}
           <g className="book-character-open">
-            {/* A thin cover edge gives the open book a little depth. */}
-            <path
-              d="M38 94 L48 201 Q49 210 59 206 C98 188 130 188 160 201 C190 188 222 188 261 206 Q271 210 272 201 L282 94"
-              fill="none"
-              stroke="#080808"
-              strokeWidth="8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            <g className="book-character-page-left">
+            <g className="book-character-open-block">
               <path
-                d="M160 76 C128 64 86 73 43 96 L53 190 C94 173 129 171 160 187 Z"
+                d="M42 174 Q101 157 160 182 Q219 157 278 174 L273 207 Q216 190 160 214 Q104 190 47 207 Z"
                 fill="#fff"
                 stroke="#080808"
                 strokeWidth="8"
@@ -159,7 +115,25 @@ export default function BookCharacterIcon({
                 strokeLinecap="round"
               />
               <path
-                d="M70 125 Q104 114 137 125 M73 142 Q106 132 139 142 M58 160 Q105 148 151 162"
+                d="M49 187 Q105 169 160 194 Q215 169 271 187 M49 198 Q105 180 160 205 Q215 180 271 198"
+                fill="none"
+                stroke="#080808"
+                strokeWidth="4.5"
+                strokeLinecap="round"
+              />
+            </g>
+
+            <g className="book-character-page-left">
+              <path
+                d="M160 76 C129 64 82 71 42 96 L50 181 C91 163 127 164 160 188 Z"
+                fill="#fff"
+                stroke="#080808"
+                strokeWidth="8"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+              <path
+                d="M68 123 Q105 111 139 126 M71 143 Q107 131 141 146 M77 162 Q113 151 148 166"
                 fill="none"
                 stroke="#080808"
                 strokeWidth="4.5"
@@ -169,7 +143,7 @@ export default function BookCharacterIcon({
 
             <g className="book-character-page-right">
               <path
-                d="M160 76 C192 64 234 73 277 96 L267 190 C226 173 191 171 160 187 Z"
+                d="M160 76 C191 64 238 71 278 96 L270 181 C229 163 193 164 160 188 Z"
                 fill="#fff"
                 stroke="#080808"
                 strokeWidth="8"
@@ -177,7 +151,7 @@ export default function BookCharacterIcon({
                 strokeLinecap="round"
               />
               <path
-                d="M183 125 Q216 114 250 125 M181 142 Q214 132 247 142 M169 160 Q215 148 262 162"
+                d="M182 126 Q216 111 252 123 M179 146 Q213 131 249 143 M172 166 Q207 151 243 162"
                 fill="none"
                 stroke="#080808"
                 strokeWidth="4.5"
@@ -185,19 +159,49 @@ export default function BookCharacterIcon({
               />
             </g>
 
-            {/* The center fold stays visible while both pages unfold from it. */}
             <path
-              d="M160 77 C155 108 155 156 160 188"
+              d="M160 76 Q155 128 160 188"
               fill="none"
               stroke="#080808"
               strokeWidth="7"
               strokeLinecap="round"
             />
+          </g>
 
+          {/* The face belongs to the cover. It turns away with the cover; it never blinks. */}
+          <g className="book-character-cover">
+            <path
+              d="M48 83 C43 84 40 91 43 100 L91 188 C98 202 109 208 122 204 L293 158 Q302 155 296 144 L238 44 C232 33 223 29 211 32 L57 69 C49 71 46 77 48 83 Z"
+              fill="#fff"
+              stroke="#080808"
+              strokeWidth="8"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+            <g className="book-character-sleep-face" fill="none" stroke="#080808" strokeLinecap="round">
+              <path d="M132 124 Q148 139 164 123" strokeWidth="8" />
+              <path d="M204 106 Q220 121 236 104" strokeWidth="8" />
+              <path d="M175 133 L184 130" strokeWidth="6" />
+            </g>
+          </g>
+
+          {/* Zzz is the only separate sleep element; it simply fades away on click. */}
+          <g
+            className="book-character-sleep-marks"
+            fill="none"
+            stroke="#080808"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M273 17 L300 10 L281 35 L306 29" />
+            <path d="M257 48 L280 42 L263 63 L286 58" strokeWidth="7" />
           </g>
         </g>
       </svg>
-      <span className="book-character-sr-only">{isOpen ? '书本已打开' : '书本正在睡觉'}</span>
+      <span className="book-character-sr-only">
+        {isOpen ? '书本已打开' : '书本正在睡觉'}
+      </span>
     </button>
   );
 }
