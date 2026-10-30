@@ -74,8 +74,9 @@ try {
       }
       await page.goto('http://127.0.0.1:4173', {waitUntil:'networkidle'});
     }
+    await page.locator('[data-cover-action="home"]').click();
+    await page.locator('.side-rail').waitFor({state:'visible'});
     if (device==='desktop') {
-      await page.locator('.rail-nav a[href="#home"]').click();
       await page.locator('.rail-nav a[href="#scripts"]').hover();
       await page.screenshot({path:'preview-screenshots/desktop-nav-hover.png',animations:'disabled'});
     }
