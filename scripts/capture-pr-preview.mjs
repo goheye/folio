@@ -21,7 +21,7 @@ try {
       ariaLabel: document.querySelector('.landing-cover')?.getAttribute('aria-label'),
       wordmark: document.querySelector('.cover-wordmark')?.textContent?.trim(),
       title: document.querySelector('#cover-title')?.textContent?.trim(),
-      role: document.querySelector('.cover-role')?.textContent?.replace(/\\s+/g, ' ').trim(),
+      role: document.querySelector('.cover-role')?.textContent?.replace(/\s+/g, ' ').trim(),
       pageTitle: document.title,
       description: document.querySelector('meta[name="description"]')?.getAttribute('content'),
     }));
