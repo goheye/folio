@@ -225,3 +225,17 @@
 - 实现提交：[6d01d59](https://github.com/goheye/folio/commit/6d01d59320b8e1904af9668d06154c6b06a5b162)；专项 Playwright 回归：[90f66f1](https://github.com/goheye/folio/commit/90f66f15aa75a314cebb2bc38f13862e526ed255)。
 - `90f66f1` 的 GitHub Actions：lint、build、桌面/手机 Playwright（原 PNG 加载、影片点击动画 0.42s、四栏目切换、原有剧本及手记动画）均成功，见 [视觉验收](https://github.com/goheye/folio/actions/runs/41094545488)；[Cloudflare 独立预览部署](https://github.com/goheye/folio/actions/runs/41094545489) 成功。预览地址：`https://folio-preview-c.3303147509.workers.dev/`。
 - 生产 `main` 不修改；PR #1 继续 Draft，待用户亲自体验预览再决定是否合并。
+
+
+## D19：影像场记板「合板后持续闪烁」的动画修正（2026-10-31，预览待用户体验确认）
+
+**用户明确反馈：** 前一版仅对完整场记板 PNG 做左右旋转／回弹，未实现真正的开合，不符合预期。用户需要图标初始为**拍板张开**的状态；点击时**只有上方拍板合拢**，之后红色录制圆点**持续闪烁**。用户对上一版**图标本身予以认可**，无需更换或重绘素材。
+
+**本轮实际实现：**
+- 继续复用原文件 `public/icons/film-clapper-original.png`，原始 PNG 文件字节不变（Git blob `c208cba0be4bff881a499dcde5a1d3b520d00793`）。网页通过 4 层**同一张原始 PNG** 和 CSS `clip-path` 拆分上盖、下方板身、REC 字样、红点；不是修改 PNG 文件，也不是重新手绘 SVG。
+- 上盖围绕左侧铰接点约 0.62 秒转动 27°，由斜向抬起合到下方板身上。板身表情和 REC 字样固定不动；合板后原 PNG 中的红点以 1 秒周期持续明暗闪烁。
+- 为了能看见持续闪烁，**本轮交互实现选择**首次点击只进入封面上的录制状态，再次点击才进入「影像」栏目；激活时文字提示“再次点击进入影像”。**第二次点击才导航是助手为解决持续闪烁提出的实现选择，并非用户明确确认的最终导航规则**，仍需体验反馈。
+- 在 `prefers-reduced-motion` 下立即合板并保持红点静态显示，避免无限闪烁刺激；栏目仍可通过第二次点击进入。
+- 只更改 `src/components/LandingCover.tsx`、`src/styles/globals.css` 和桌面／手机 Playwright 回归测试；剧本翻页、手记书写、关于及内页不调整。
+
+**验证与发布边界：** [动画修正提交](https://github.com/goheye/folio/commit/4a71ba385e80417d212d4c91ca94f04bd49df758)。[GitHub Actions lint/build + 桌面手机交互测试](https://github.com/goheye/folio/actions/runs/41096063359) 成功；[Cloudflare 独立预览部署](https://github.com/goheye/folio/actions/runs/41096063434) 成功。截图包含合板后录制状态。预览：https://folio-preview-c.3303147509.workers.dev/ 。仅设计分支 `design/c-modern-first-pass` 和 Draft PR #1，正式 `main` 未修改。
