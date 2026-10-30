@@ -133,8 +133,8 @@ export default function BookCharacterIcon({
 
             {/* Hand-drawn sleep marks. */}
             <g className="book-character-sleep" fill="none" stroke="#080808" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M268 31 L293 24 L274 47 L298 41" />
-              <path d="M248 63 L270 57 L253 78 L274 73" strokeWidth="7" />
+              <path d="M273 17 L300 10 L281 35 L306 29" />
+              <path d="M257 48 L280 42 L263 63 L286 58" strokeWidth="7" />
             </g>
           </g>
 
@@ -159,17 +159,10 @@ export default function BookCharacterIcon({
                 strokeLinecap="round"
               />
               <path
-                d="M70 158 Q104 148 137 157 M74 172 Q108 162 140 171"
+                d="M70 125 Q104 114 137 125 M73 142 Q106 132 139 142 M58 160 Q105 148 151 162"
                 fill="none"
                 stroke="#080808"
                 strokeWidth="4.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M58 181 Q105 164 151 180"
-                fill="none"
-                stroke="#080808"
-                strokeWidth="3.5"
                 strokeLinecap="round"
               />
             </g>
@@ -184,17 +177,10 @@ export default function BookCharacterIcon({
                 strokeLinecap="round"
               />
               <path
-                d="M183 157 Q216 148 250 158 M180 171 Q214 162 246 172"
+                d="M183 125 Q216 114 250 125 M181 142 Q214 132 247 142 M169 160 Q215 148 262 162"
                 fill="none"
                 stroke="#080808"
                 strokeWidth="4.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M169 180 Q215 164 262 181"
-                fill="none"
-                stroke="#080808"
-                strokeWidth="3.5"
                 strokeLinecap="round"
               />
             </g>
