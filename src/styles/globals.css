@@ -759,7 +759,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   outline-offset: 5px;
   border-radius: 12px;
 }
-.cover-entry-script:hover .doodle-script { animation: cover-paper-wiggle .46s ease; }
+.cover-entry-script:hover .doodle-script:not(.is-writing) { animation: cover-paper-wiggle .46s ease; }
 .cover-entry-profile:hover .doodle-profile { animation: cover-profile-bob .42s ease; }
 .cover-entry-film:hover .doodle-film-clapper { animation: clapper-snap .38s cubic-bezier(.22,.78,.24,1.25); }
 .cover-entry-journal:hover .doodle-note-pages { animation: note-pages-bob .38s ease; }
@@ -841,6 +841,21 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .cover-enter:hover { transform: none; }
 }
 
+
+/* Click-to-write motion for the cover script icon. */
+.doodle-script .doodle-script-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+.doodle-script.is-writing .doodle-script-line-one {
+  animation: note-line-write .50s linear 0s both;
+}
+.doodle-script.is-writing .doodle-script-line-two {
+  animation: note-line-write .46s linear .74s both;
+}
+.cover-entry-script .cover-entry-button[aria-busy="true"] .cover-icon-pad {
+  transform: scale(.985);
+}
 
 /* The pen follows each notebook line; the ink reveal uses matching timings. */
 .doodle-note .doodle-note-line {
