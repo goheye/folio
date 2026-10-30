@@ -552,3 +552,282 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+
+/* Independent portfolio cover: same neutral canvas, with small editorial color notes. */
+.landing-cover {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: 32px clamp(18px, 4vw, 56px);
+  background: var(--paper);
+}
+.cover-stage {
+  position: relative;
+  width: min(1180px, 100%);
+  height: min(780px, calc(100svh - 64px));
+  min-height: 640px;
+  margin-inline: auto;
+}
+.cover-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: 430px;
+  max-width: 42%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+.cover-mark {
+  position: relative;
+  display: flex;
+  width: 226px;
+  height: 226px;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #D8E0DC;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 13px 30px rgba(34,42,37,.065), inset 0 1px 0 #FFFFFF;
+  color: var(--ink);
+}
+.cover-mark::before {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid #E9EDEA;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+.cover-wordmark {
+  position: relative;
+  z-index: 1;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 59px;
+  font-weight: 500;
+  letter-spacing: -.065em;
+  line-height: 1;
+}
+.cover-mark-flourish {
+  position: relative;
+  z-index: 1;
+  width: 76px;
+  height: 23px;
+  margin-top: 8px;
+  overflow: visible;
+  fill: none;
+  stroke: #4F5A53;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cover-center h1 {
+  margin: 17px 0 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -.055em;
+  line-height: 1.3;
+}
+.cover-role {
+  margin: 8px 0 0;
+  color: #68716B;
+  font-size: 13px;
+  letter-spacing: .08em;
+}
+.cover-role span { padding-inline: 5px; color: #A1AAA4; }
+.cover-enter {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+  padding: 0 27px;
+  border: 1px solid #353D38;
+  border-radius: 999px;
+  background: #343C37;
+  box-shadow: 0 5px 12px rgba(31,35,32,.09), inset 0 1px 0 rgba(255,255,255,.16);
+  color: #FFFFFF;
+  font-size: 13px;
+  letter-spacing: .08em;
+  transition: transform .22s ease, background .22s ease, box-shadow .22s ease;
+}
+.cover-enter:hover {
+  transform: translateY(-3px);
+  background: #252C28;
+  box-shadow: 0 9px 18px rgba(31,35,32,.14), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.cover-enter:active { transform: translateY(0) scale(.98); }
+.cover-note {
+  margin: 14px 0 0;
+  color: #858C87;
+  font-family: var(--serif);
+  font-size: 12px;
+  letter-spacing: .045em;
+}
+.cover-entry {
+  position: absolute;
+  z-index: 2;
+  width: 190px;
+}
+.cover-entry-script { top: 6%; left: 4%; }
+.cover-entry-profile { top: 7%; right: 4%; }
+.cover-entry-film { bottom: 6%; left: 5%; }
+.cover-entry-journal { right: 5%; bottom: 6%; }
+.cover-entry-button {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.cover-icon-pad {
+  display: grid;
+  width: 136px;
+  height: 136px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 46% 54% 51% 49% / 53% 44% 56% 47%;
+  box-shadow: 0 7px 17px rgba(31,35,32,.045), inset 0 1px 0 rgba(255,255,255,.9);
+  transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s ease, border-radius .25s ease;
+}
+.cover-entry-script .cover-icon-pad { background: #EAF0F2; transform: rotate(-4deg); }
+.cover-entry-profile .cover-icon-pad { background: #F0EEE7; transform: rotate(3deg); }
+.cover-entry-film .cover-icon-pad { background: #EDF0E8; transform: rotate(3deg); }
+.cover-entry-journal .cover-icon-pad { background: #F3EAE8; transform: rotate(-3deg); }
+.cover-entry-button:hover .cover-icon-pad,
+.cover-entry-button:focus-visible .cover-icon-pad {
+  transform: translateY(-5px) rotate(0);
+  border-radius: 50%;
+  box-shadow: 0 13px 23px rgba(31,35,32,.09), inset 0 1px 0 #FFFFFF;
+}
+.cover-entry-button:active .cover-icon-pad { transform: translateY(-1px) scale(.97); }
+.cover-entry-button .doodle-svg { width: 104px; height: 104px; color: #171A18; }
+.cover-entry-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 24px;
+}
+.cover-entry-caption strong {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+.cover-entry-caption small {
+  align-self: center;
+  color: #818984;
+  font-size: 9px;
+  letter-spacing: .16em;
+}
+.cover-entry-arrow {
+  flex: none;
+  margin-left: 1px;
+  color: #7A837D;
+  opacity: .58;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.cover-entry-button:hover .cover-entry-arrow,
+.cover-entry-button:focus-visible .cover-entry-arrow {
+  transform: translate(2px,-2px);
+  opacity: 1;
+}
+.cover-entry-button:focus-visible,
+.cover-enter:focus-visible {
+  outline: 3px solid #879A8E;
+  outline-offset: 5px;
+  border-radius: 12px;
+}
+.cover-entry-script:hover .doodle-script { animation: cover-paper-wiggle .46s ease; }
+.cover-entry-profile:hover .doodle-profile { animation: cover-profile-bob .42s ease; }
+.cover-entry-film:hover .doodle-film-clapper { animation: clapper-snap .38s cubic-bezier(.22,.78,.24,1.25); }
+.cover-entry-journal:hover .doodle-note { animation: note-wiggle .4s ease; }
+@keyframes cover-paper-wiggle {
+  0%,100% { transform: rotate(0); }
+  35% { transform: rotate(-5deg) translateY(-1px); }
+  70% { transform: rotate(3deg); }
+}
+@keyframes cover-profile-bob {
+  0%,100% { transform: rotate(0); }
+  40% { transform: rotate(-3deg) translateY(-2px); }
+  75% { transform: rotate(2deg); }
+}
+
+@media (max-width: 1050px) and (min-width: 761px) {
+  .cover-stage { min-height: 600px; }
+  .cover-center { width: 390px; max-width: 44%; }
+  .cover-mark { width: 204px; height: 204px; }
+  .cover-wordmark { font-size: 54px; }
+  .cover-entry { width: 160px; }
+  .cover-icon-pad { width: 116px; height: 116px; }
+  .cover-entry-button .doodle-svg { width: 91px; height: 91px; }
+  .cover-entry-caption { flex-wrap: wrap; gap: 5px; }
+  .cover-entry-caption strong { font-size: 19px; }
+}
+@media (max-width: 760px) {
+  .landing-cover { min-height: 100svh; padding: 25px 16px 30px; }
+  .cover-stage {
+    display: grid;
+    width: min(520px, 100%);
+    height: auto;
+    min-height: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "center center" "script profile" "film journal";
+    align-items: center;
+    gap: 12px 8px;
+  }
+  .cover-center {
+    position: static;
+    width: 100%;
+    max-width: none;
+    grid-area: center;
+    margin-bottom: 7px;
+    transform: none;
+  }
+  .cover-mark { width: 158px; height: 158px; }
+  .cover-mark::before { inset: 6px; }
+  .cover-wordmark { font-size: 45px; }
+  .cover-mark-flourish { width: 63px; margin-top: 5px; }
+  .cover-center h1 { margin-top: 13px; font-size: 24px; }
+  .cover-role { margin-top: 6px; font-size: 11px; }
+  .cover-enter { min-height: 43px; gap: 10px; margin-top: 16px; padding-inline: 21px; font-size: 12px; }
+  .cover-note { margin-top: 9px; font-size: 11px; }
+  .cover-entry { position: static; width: auto; }
+  .cover-entry-script { grid-area: script; }
+  .cover-entry-profile { grid-area: profile; }
+  .cover-entry-film { grid-area: film; }
+  .cover-entry-journal { grid-area: journal; }
+  .cover-entry-button { gap: 6px; }
+  .cover-icon-pad { width: 92px; height: 92px; }
+  .cover-entry-button .doodle-svg { width: 76px; height: 76px; }
+  .cover-entry-caption { min-height: 21px; gap: 5px; }
+  .cover-entry-caption strong { font-size: 17px; }
+  .cover-entry-caption small { font-size: 8px; letter-spacing: .12em; }
+  .cover-entry-arrow { width: 14px; height: 14px; }
+}
+@media (max-width: 360px) {
+  .landing-cover { padding-inline: 12px; }
+  .cover-mark { width: 146px; height: 146px; }
+  .cover-wordmark { font-size: 42px; }
+  .cover-entry-caption { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-entry-button:hover .cover-icon-pad,
+  .cover-entry-button:focus-visible .cover-icon-pad,
+  .cover-enter:hover { transform: none; }
+}
