@@ -6,6 +6,7 @@ type PortfolioSection = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 
 const NOTE_WRITING_DURATION_MS = 1700;
 const SCRIPT_PAGE_TURN_DURATION_MS = 1050;
+const FILM_CLAP_DURATION_MS = 420;
 
 const entries: {
   section: PortfolioSection;
@@ -26,7 +27,7 @@ export default function LandingCover({
   onNavigate: (section: PortfolioSection) => void;
 }) {
   const [writingRun, setWritingRun] = useState(0);
-  const [writingSection, setWritingSection] = useState<'scripts' | 'journal' | null>(null);
+  const [writingSection, setWritingSection] = useState<'scripts' | 'journal' | 'films' | null>(null);
   const writingTimer = useRef<number | null>(null);
 
   useEffect(() => () => {
@@ -39,12 +40,16 @@ export default function LandingCover({
       ? 'journal'
       : section === 'scripts'
         ? 'scripts'
-        : null;
+        : section === 'films'
+          ? 'films'
+          : null;
     const writingDuration = writingKind === 'journal'
       ? NOTE_WRITING_DURATION_MS
       : writingKind === 'scripts'
         ? SCRIPT_PAGE_TURN_DURATION_MS
-        : null;
+        : writingKind === 'films'
+          ? FILM_CLAP_DURATION_MS
+          : null;
     if (writingKind !== null && writingDuration !== null) {
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       setWritingSection(reduceMotion ? null : writingKind);
@@ -96,6 +101,20 @@ export default function LandingCover({
                       width={1254}
                       height={1254}
                       decoding="sync"
+                      draggable={false}
+                    />
+                  </span>
+                ) : entry.section === 'films' ? (
+                  <span
+                    className={'cover-film-icon' + (writingSection === 'films' ? ' is-snapping' : '')}
+                    aria-hidden="true"
+                  >
+                    <img
+                      className="cover-film-frame"
+                      src="/icons/film-clapper-original.png"
+                      alt=""
+                      width={1254}
+                      height={1254}
                       draggable={false}
                     />
                   </span>

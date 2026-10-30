@@ -937,3 +937,47 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
     animation: none;
   }
 }
+
+/* Cover FILM icon: original user PNG stays byte-for-byte untouched.
+   Motion is applied to the full image, not to reconstructed SVG strokes. */
+.cover-film-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.cover-film-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 28% 63%;
+}
+.cover-entry-film .cover-entry-button:hover .cover-film-frame,
+.cover-entry-film .cover-entry-button:focus-visible .cover-film-frame {
+  animation: cover-film-hover .38s ease both;
+}
+.cover-entry-film .cover-film-icon.is-snapping .cover-film-frame {
+  animation: cover-film-clack .42s cubic-bezier(.22,.78,.24,1.12) both;
+}
+@keyframes cover-film-hover {
+  0%, 100% { transform: rotate(0deg); }
+  42% { transform: rotate(-3deg) translateY(-2px); }
+  72% { transform: rotate(1.5deg) translateY(-1px); }
+}
+@keyframes cover-film-clack {
+  0% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-7deg) scale(.985); }
+  45% { transform: rotate(4deg) scale(1.015); }
+  66% { transform: rotate(-2deg); }
+  85% { transform: rotate(1deg); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-entry-film .cover-entry-button:hover .cover-film-frame,
+  .cover-entry-film .cover-entry-button:focus-visible .cover-film-frame,
+  .cover-entry-film .cover-film-icon.is-snapping .cover-film-frame {
+    animation: none;
+  }
+}
