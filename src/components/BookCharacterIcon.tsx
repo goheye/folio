@@ -11,8 +11,8 @@ type BookCharacterIconProps = {
 };
 
 /**
- * Hand-drawn book icon. The closed cover keeps its sleeping face;
- * opening the book turns that whole cover away from the viewer.
+ * Hand-drawn book icon. The front cover turns over as one physical sheet;
+ * the pages unfold underneath it and the page block changes into an open spread.
  */
 export default function BookCharacterIcon({
   size = 220,
