@@ -878,3 +878,62 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-entry-journal .cover-entry-button[aria-busy="true"] .cover-icon-pad {
   transform: scale(.985);
 }
+
+
+/* Cover script entry: exact user-provided PNG artwork; no SVG redraw or part-by-part reconstruction. */
+.cover-entry-script .cover-icon-pad {
+  background: #fff;
+  transform: none;
+  overflow: hidden;
+}
+.cover-entry-script .cover-entry-button:hover .cover-icon-pad,
+.cover-entry-script .cover-entry-button:focus-visible .cover-icon-pad {
+  transform: translateY(-4px);
+}
+.cover-book-icon {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  perspective: 680px;
+}
+.cover-book-frame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.cover-book-open {
+  opacity: 0;
+  transform-origin: 50% 58%;
+}
+.cover-book-icon.is-turning .cover-book-closed {
+  animation: cover-book-close-to-open 1.05s ease-in-out both;
+}
+.cover-book-icon.is-turning .cover-book-open {
+  animation: cover-book-unfold 1.05s cubic-bezier(.2,.65,.25,1) both;
+}
+@keyframes cover-book-close-to-open {
+  0%, 28% { opacity: 1; transform: rotateY(0deg) scale(1); }
+  55% { opacity: .7; transform: rotateY(-38deg) scale(.92); }
+  69%, 100% { opacity: 0; transform: rotateY(-72deg) scale(.83); }
+}
+@keyframes cover-book-unfold {
+  0%, 32% { opacity: 0; transform: rotateY(67deg) scale(.86); }
+  54% { opacity: .7; transform: rotateY(24deg) scale(.94); }
+  86%, 100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-book-icon.is-turning .cover-book-closed,
+  .cover-book-icon.is-turning .cover-book-open {
+    animation: none;
+  }
+}

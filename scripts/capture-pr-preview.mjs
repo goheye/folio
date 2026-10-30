@@ -31,6 +31,21 @@ try {
         !coverIdentity.pageTitle.startsWith('茹雪 ruxue') || !coverIdentity.description?.includes('茹雪')) {
       throw Error('Cover identity copy does not match the approved scheme A: ' + JSON.stringify(coverIdentity));
     }
+    const coverScriptImages = await page.locator('.cover-entry-script .cover-book-frame').evaluateAll(images =>
+      images.map(img => ({
+        src: img.getAttribute('src'), complete: img.complete,
+        width: img.naturalWidth, height: img.naturalHeight
+      }))
+    );
+    if (coverScriptImages.length !== 2 ||
+        coverScriptImages[0].src !== '/icons/script-book-closed-original.png' ||
+        coverScriptImages[1].src !== '/icons/script-book-open-original.png' ||
+        coverScriptImages.some(img => !img.complete || img.width !== 1254 || img.height !== 1254)) {
+      throw Error('Script icon must load both untouched 1254x1254 user PNG source images: '+JSON.stringify(coverScriptImages));
+    }
+    if (await page.locator('.cover-entry-script .doodle-script').count() !== 0) {
+      throw Error('Script cover entry must not use a reconstructed SVG in place of the supplied PNG');
+    }
     await page.screenshot({path:'preview-screenshots/'+device+'-cover-fold.png',fullPage:false,animations:'disabled'});
     if (!coverMetrics.hasCover || coverMetrics.sideRailCount !== 0 || coverMetrics.entryCount !== 4) {
       throw Error('Cover must be a separate entrance with four clickable creative entries');
@@ -119,34 +134,17 @@ try {
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing-late.png',fullPage:false});
         await page.locator('#journal').waitFor({state:'visible', timeout:4000});
       } else if (section === 'scripts') {
-        await page.locator('.cover-entry-script .doodle-script.is-writing').waitFor({state:'visible'});
-        const motion = await page.locator('.cover-entry-script .doodle-script-pen animateMotion').evaluate(el => ({
-          duration: el.getAttribute('dur'),
-          calcMode: el.getAttribute('calcMode'),
-          path: el.getAttribute('path') || '',
-          keyTimes: (el.getAttribute('keyTimes') || '').split(';'),
-          keyPoints: (el.getAttribute('keyPoints') || '').split(';'),
+        await page.locator('.cover-entry-script .cover-book-icon.is-turning').waitFor({state:'visible'});
+        const animation = await page.locator('.cover-entry-script .cover-book-open').evaluate(el => ({
+          count: el.getAnimations().length,
+          name: getComputedStyle(el).animationName,
+          duration: getComputedStyle(el).animationDuration,
         }));
-        if (motion.duration !== '1.2s' || motion.calcMode !== 'linear' ||
-            !motion.path.includes('M-19 -7') || !motion.path.includes('L-1 -2')) {
-          throw Error('Script pen motion does not match the shorter hand-writing sequence: ' + JSON.stringify(motion));
+        if (animation.count === 0 || animation.name !== 'cover-book-unfold' || animation.duration !== '1.05s') {
+          throw Error('Script book opening animation did not begin: ' + JSON.stringify(animation));
         }
-        if (motion.keyTimes.length !== 4 || motion.keyPoints.length !== 4) {
-          throw Error('Script pen must move through the first line, lift, and second line: ' + JSON.stringify(motion));
-        }
-        const lineTimings = await page.locator('.cover-entry-script .doodle-script-line').evaluateAll(lines =>
-          lines.map(line => {
-            const style = getComputedStyle(line);
-            return { name: style.animationName, duration: style.animationDuration, delay: style.animationDelay };
-          })
-        );
-        if (lineTimings.length !== 2 || lineTimings.some(line => line.name !== 'note-line-write')) {
-          throw Error('Script ink lines are not animated in sync with the pen: ' + JSON.stringify(lineTimings));
-        }
-        console.log(device + ' script line timings:', JSON.stringify(lineTimings));
-        await page.waitForTimeout(480);
-        await page.screenshot({path:'preview-screenshots/'+device+'-cover-script-writing-middle.png',fullPage:false});
-        await page.waitForTimeout(780);
+        await page.waitForTimeout(620);
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-script-page-turn.png',fullPage:false});
         await page.locator('#scripts').waitFor({state:'visible', timeout:4000});
       } else {
         await page.locator('#'+section).waitFor({state:'visible'});

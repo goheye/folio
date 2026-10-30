@@ -5,7 +5,7 @@ import Doodle, { type DoodleKind } from './Doodle';
 type PortfolioSection = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 
 const NOTE_WRITING_DURATION_MS = 1700;
-const SCRIPT_WRITING_DURATION_MS = 1200;
+const SCRIPT_PAGE_TURN_DURATION_MS = 1050;
 
 const entries: {
   section: PortfolioSection;
@@ -43,7 +43,7 @@ export default function LandingCover({
     const writingDuration = writingKind === 'journal'
       ? NOTE_WRITING_DURATION_MS
       : writingKind === 'scripts'
-        ? SCRIPT_WRITING_DURATION_MS
+        ? SCRIPT_PAGE_TURN_DURATION_MS
         : null;
     if (writingKind !== null && writingDuration !== null) {
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -75,12 +75,38 @@ export default function LandingCover({
               aria-label={'进入' + entry.title + '栏目'}
             >
               <span className="cover-icon-pad">
-                <Doodle
-                  kind={entry.kind}
-                  size={104}
-                  active={entry.section === writingSection}
-                  animationKey={writingRun}
-                />
+                {entry.section === 'scripts' ? (
+                  <span
+                    className={'cover-book-icon' + (writingSection === 'scripts' ? ' is-turning' : '')}
+                    aria-hidden="true"
+                  >
+                    <img
+                      className="cover-book-frame cover-book-closed"
+                      src="/icons/script-book-closed-original.png"
+                      alt=""
+                      width={1254}
+                      height={1254}
+                      decoding="sync"
+                      draggable={false}
+                    />
+                    <img
+                      className="cover-book-frame cover-book-open"
+                      src="/icons/script-book-open-original.png"
+                      alt=""
+                      width={1254}
+                      height={1254}
+                      decoding="sync"
+                      draggable={false}
+                    />
+                  </span>
+                ) : (
+                  <Doodle
+                    kind={entry.kind}
+                    size={104}
+                    active={entry.section === writingSection}
+                    animationKey={writingRun}
+                  />
+                )}
               </span>
               <span className="cover-entry-caption">
                 <strong>{entry.title}</strong>
