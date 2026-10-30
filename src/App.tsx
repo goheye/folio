@@ -1,12 +1,13 @@
 import { useEffect, useState, type MouseEvent } from 'react';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Doodle from './components/Doodle';
+import LandingCover from './components/LandingCover';
 
-type SectionId = 'home' | 'scripts' | 'films' | 'journal' | 'about';
-const sections: SectionId[] = ['home', 'scripts', 'films', 'journal', 'about'];
+type SectionId = 'cover' | 'home' | 'scripts' | 'films' | 'journal' | 'about';
+const sections: SectionId[] = ['cover', 'home', 'scripts', 'films', 'journal', 'about'];
 function currentHash(): SectionId {
   const hash = window.location.hash.slice(1);
-  return sections.includes(hash as SectionId) ? hash as SectionId : 'home';
+  return sections.includes(hash as SectionId) ? hash as SectionId : 'cover';
 }
 const navigation = [
   { label: '首页', href: '#home' },
@@ -45,6 +46,7 @@ export default function App() {
     document.addEventListener('keydown', closeOnEsc);
     return () => document.removeEventListener('keydown', closeOnEsc);
   }, []);
+  if (activeSection === 'cover') return <LandingCover onNavigate={navigate} />;
   return (
     <div className="site" id="home">
       <a className="skip-link" href="#workspace-main">跳到主要内容</a>
