@@ -66,19 +66,19 @@
 
 .book-character-page-left {
   transform-origin: 100% 50%;
-  transform: perspective(900px) rotateY(-86deg) scale(0.94, 0.98);
+  transform: perspective(900px) rotateY(-86deg);
 }
 
 .book-character-page-right {
   transform-origin: 0% 50%;
-  transform: perspective(900px) rotateY(86deg) scale(0.94, 0.98);
+  transform: perspective(900px) rotateY(86deg);
   transition-delay: 70ms;
 }
 
 .book-character-button[data-open='true'] .book-character-page-left,
 .book-character-button[data-open='true'] .book-character-page-right {
   opacity: 1;
-  transform: perspective(900px) rotateY(0deg) scale(1, 1);
+  transform: perspective(900px) rotateY(0deg);
 }
 
 /*
