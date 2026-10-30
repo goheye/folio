@@ -6,9 +6,9 @@
   color-scheme: light;
   font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
   color: #292D2B;
-  background: #F5F6F5;
+  background: #F7F7F4;
   font-synthesis: none;
-  --paper: #F5F6F5;
+  --paper: #F7F7F4;
   --ink: #292D2B;
   --muted: #737975;
   --line: #E5E8E6;
@@ -564,7 +564,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 }
 .cover-stage {
   position: relative;
-  width: min(1180px, 100%);
+  width: min(1240px, 100%);
   height: min(780px, calc(100svh - 64px));
   min-height: 640px;
   margin-inline: auto;
@@ -574,8 +574,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   top: 50%;
   left: 50%;
   display: flex;
-  width: 430px;
-  max-width: 42%;
+  width: 470px;
+  max-width: 44%;
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -584,8 +584,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-mark {
   position: relative;
   display: flex;
-  width: 226px;
-  height: 226px;
+  width: 270px;
+  height: 270px;
   flex: none;
   flex-direction: column;
   align-items: center;
@@ -608,7 +608,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   position: relative;
   z-index: 1;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 59px;
+  font-size: 68px;
   font-weight: 500;
   letter-spacing: -.065em;
   line-height: 1;
@@ -616,8 +616,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-mark-flourish {
   position: relative;
   z-index: 1;
-  width: 76px;
-  height: 23px;
+  width: 88px;
+  height: 26px;
   margin-top: 8px;
   overflow: visible;
   fill: none;
@@ -630,7 +630,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   margin: 17px 0 0;
   color: var(--ink);
   font-family: var(--serif);
-  font-size: 30px;
+  font-size: 33px;
   font-weight: 600;
   letter-spacing: -.055em;
   line-height: 1.3;
@@ -638,13 +638,13 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-role {
   margin: 8px 0 0;
   color: #68716B;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: .08em;
 }
 .cover-role span { padding-inline: 5px; color: #A1AAA4; }
 .cover-enter {
   display: inline-flex;
-  min-height: 48px;
+  min-height: 52px;
   align-items: center;
   justify-content: center;
   gap: 15px;
@@ -675,7 +675,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-entry {
   position: absolute;
   z-index: 2;
-  width: 190px;
+  width: 210px;
 }
 .cover-entry-script { top: 6%; left: 4%; }
 .cover-entry-profile { top: 7%; right: 4%; }
@@ -695,8 +695,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 }
 .cover-icon-pad {
   display: grid;
-  width: 136px;
-  height: 136px;
+  width: 166px;
+  height: 166px;
   place-items: center;
   border: 1px solid rgba(255,255,255,.95);
   border-radius: 46% 54% 51% 49% / 53% 44% 56% 47%;
@@ -714,7 +714,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   box-shadow: 0 13px 23px rgba(31,35,32,.09), inset 0 1px 0 #FFFFFF;
 }
 .cover-entry-button:active .cover-icon-pad { transform: translateY(-1px) scale(.97); }
-.cover-entry-button .doodle-svg { width: 104px; height: 104px; color: #171A18; }
+.cover-entry-button .doodle-svg { width: 126px; height: 126px; color: #171A18; }
 .cover-entry-caption {
   display: flex;
   align-items: center;
@@ -725,7 +725,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-entry-caption strong {
   color: var(--ink);
   font-family: var(--serif);
-  font-size: 21px;
+  font-size: 23px;
   font-weight: 600;
   letter-spacing: .04em;
 }
@@ -771,11 +771,11 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 @media (max-width: 1050px) and (min-width: 761px) {
   .cover-stage { min-height: 600px; }
   .cover-center { width: 390px; max-width: 44%; }
-  .cover-mark { width: 204px; height: 204px; }
+  .cover-mark { width: 220px; height: 220px; }
   .cover-wordmark { font-size: 54px; }
   .cover-entry { width: 160px; }
-  .cover-icon-pad { width: 116px; height: 116px; }
-  .cover-entry-button .doodle-svg { width: 91px; height: 91px; }
+  .cover-icon-pad { width: 126px; height: 126px; }
+  .cover-entry-button .doodle-svg { width: 98px; height: 98px; }
   .cover-entry-caption { flex-wrap: wrap; gap: 5px; }
   .cover-entry-caption strong { font-size: 19px; }
 }
