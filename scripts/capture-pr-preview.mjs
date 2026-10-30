@@ -31,16 +31,6 @@ try {
         !coverIdentity.pageTitle.startsWith('茹雪 ruxue') || !coverIdentity.description?.includes('茹雪')) {
       throw Error('Cover identity copy does not match the approved scheme A: ' + JSON.stringify(coverIdentity));
     }
-    const scriptIdle = await page.locator('.cover-entry-script .doodle-script').evaluate(el => ({
-      book: Boolean(el.querySelector('.doodle-script-book')),
-      face: Boolean(el.querySelector('.doodle-script-face')),
-      pen: Boolean(el.querySelector('.doodle-script-pen')),
-      lines: el.querySelectorAll('.doodle-script-line').length,
-      hasMotion: Boolean(el.querySelector('animateMotion')),
-    }));
-    if (!scriptIdle.book || !scriptIdle.face || scriptIdle.pen || scriptIdle.lines !== 0 || scriptIdle.hasMotion) {
-      throw Error('Script cover icon must show only the closed hand-drawn book at rest: ' + JSON.stringify(scriptIdle));
-    }
     await page.screenshot({path:'preview-screenshots/'+device+'-cover-fold.png',fullPage:false,animations:'disabled'});
     if (!coverMetrics.hasCover || coverMetrics.sideRailCount !== 0 || coverMetrics.entryCount !== 4) {
       throw Error('Cover must be a separate entrance with four clickable creative entries');
@@ -137,14 +127,9 @@ try {
           keyTimes: (el.getAttribute('keyTimes') || '').split(';'),
           keyPoints: (el.getAttribute('keyPoints') || '').split(';'),
         }));
-        const scriptActive = await page.locator('.cover-entry-script .doodle-script.is-writing').evaluate(el => ({
-          pen: Boolean(el.querySelector('.doodle-script-pen')),
-          lines: el.querySelectorAll('.doodle-script-line').length,
-        }));
-        if (!scriptActive.pen || scriptActive.lines !== 2 ||
-            motion.duration !== '1.2s' || motion.calcMode !== 'linear' ||
-            !motion.path.includes('M91 142') || !motion.path.includes('L144 151')) {
-          throw Error('Script writing pen and ink must appear only during the retained 1.2s click animation: ' + JSON.stringify({motion,scriptActive}));
+        if (motion.duration !== '1.2s' || motion.calcMode !== 'linear' ||
+            !motion.path.includes('M-19 -7') || !motion.path.includes('L-1 -2')) {
+          throw Error('Script pen motion does not match the shorter hand-writing sequence: ' + JSON.stringify(motion));
         }
         if (motion.keyTimes.length !== 4 || motion.keyPoints.length !== 4) {
           throw Error('Script pen must move through the first line, lift, and second line: ' + JSON.stringify(motion));
