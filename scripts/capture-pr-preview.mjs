@@ -17,6 +17,20 @@ try {
       horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
     }));
     console.log(device + ' cover metrics:', JSON.stringify(coverMetrics));
+    const coverIdentity = await page.evaluate(() => ({
+      ariaLabel: document.querySelector('.landing-cover')?.getAttribute('aria-label'),
+      wordmark: document.querySelector('.cover-wordmark')?.textContent?.trim(),
+      title: document.querySelector('#cover-title')?.textContent?.trim(),
+      role: document.querySelector('.cover-role')?.textContent?.replace(/\\s+/g, ' ').trim(),
+      pageTitle: document.title,
+      description: document.querySelector('meta[name="description"]')?.getAttribute('content'),
+    }));
+    console.log(device + ' cover identity:', JSON.stringify(coverIdentity));
+    if (coverIdentity.ariaLabel !== '茹雪个人作品集封面' || coverIdentity.wordmark !== 'ruxue' ||
+        coverIdentity.title !== '茹雪的创作空间' || coverIdentity.role !== '编剧 · AI 影像创作者' ||
+        !coverIdentity.pageTitle.startsWith('茹雪 ruxue') || !coverIdentity.description?.includes('茹雪')) {
+      throw Error('Cover identity copy does not match the approved scheme A: ' + JSON.stringify(coverIdentity));
+    }
     await page.screenshot({path:'preview-screenshots/'+device+'-cover-fold.png',fullPage:false,animations:'disabled'});
     if (!coverMetrics.hasCover || coverMetrics.sideRailCount !== 0 || coverMetrics.entryCount !== 4) {
       throw Error('Cover must be a separate entrance with four clickable creative entries');
