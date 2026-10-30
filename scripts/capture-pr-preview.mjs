@@ -84,12 +84,39 @@ try {
       await page.locator('[data-cover-action="'+section+'"]').click();
       if (section === 'journal') {
         await page.locator('.cover-entry-journal .doodle-note.is-writing').waitFor({state:'visible'});
-        const penMotion = await page.locator('.cover-entry-journal .doodle-note-pen animateMotion').count();
-        if (penMotion !== 1) throw Error('Notebook pen SVG motion did not start');
-        const motionDuration = await page.locator('.cover-entry-journal .doodle-note-pen animateMotion').getAttribute('dur');
-        if (motionDuration !== '1.3s') throw Error('Notebook pen motion duration changed unexpectedly');
-        await page.waitForTimeout(360);
-        await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing.png',fullPage:false});
+        const motion = await page.locator('.cover-entry-journal .doodle-note-pen animateMotion').evaluate(el => ({
+          duration: el.getAttribute('dur'),
+          calcMode: el.getAttribute('calcMode'),
+          path: el.getAttribute('path') || '',
+          keyTimes: (el.getAttribute('keyTimes') || '').split(';'),
+          keyPoints: (el.getAttribute('keyPoints') || '').split(';'),
+        }));
+        if (motion.duration !== '1.7s' || motion.calcMode !== 'linear') {
+          throw Error('Notebook pen motion timing is not the revised natural-writing sequence: ' + JSON.stringify(motion));
+        }
+        if (!motion.path.includes('Q108 99 147 92') ||
+            !motion.path.includes('Q108 122 138 116') ||
+            !motion.path.includes('Q119 146 155 139')) {
+          throw Error('Notebook pen path no longer follows the three ink strokes: ' + motion.path);
+        }
+        if (motion.keyTimes.length !== 11 || motion.keyPoints.length !== 11 ||
+            motion.keyPoints.filter((point, index, all) => index > 0 && point === all[index - 1]).length !== 3) {
+          throw Error('Notebook pen needs a short lift/pause before each written line: ' + JSON.stringify(motion));
+        }
+        const lineTimings = await page.locator('.cover-entry-journal .doodle-note-line').evaluateAll(lines =>
+          lines.map(line => {
+            const style = getComputedStyle(line);
+            return { name: style.animationName, duration: style.animationDuration, delay: style.animationDelay };
+          })
+        );
+        if (lineTimings.length !== 3 || lineTimings.some(line => line.name !== 'note-line-write')) {
+          throw Error('Notebook ink lines are not animated in sync with the pen: ' + JSON.stringify(lineTimings));
+        }
+        console.log(device + ' notebook line timings:', JSON.stringify(lineTimings));
+        await page.waitForTimeout(960);
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing-middle.png',fullPage:false});
+        await page.waitForTimeout(480);
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing-late.png',fullPage:false});
         await page.locator('#journal').waitFor({state:'visible', timeout:4000});
       } else {
         await page.locator('#'+section).waitFor({state:'visible'});
