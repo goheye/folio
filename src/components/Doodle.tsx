@@ -29,7 +29,7 @@ export default function Doodle({
 
   const graphic = (
     <svg
-      key={kind === 'note' && active ? animationKey : interactive ? snapCount : undefined}
+      key={(kind === 'note' || kind === 'script') && active ? animationKey : interactive ? snapCount : undefined}
       className={
         'doodle-svg doodle-' + kind +
         (isActive ? ' doodle-active' : '') +
@@ -57,8 +57,21 @@ export default function Doodle({
         <path d="M15 8.5 Q14 7 18 6.5 L43 5.5 L54 17 L54 50 Q54 54 50 54 L16 56 Q11 56 11 51 L10 13 Q10 9 15 8.5 Z" />
         <path d="M43 6 L43 16 Q43 19 47 18.5 L54 17" />
         <path d="M23 24 L23.5 24.5 M36 23 L36.5 23.5" strokeWidth="4.8" />
-        <path d="M23 31 Q29.5 35 36 30.5 M20 40 L43 39 M20 46 L38 45" />
+        <path d="M23 31 Q29.5 35 36 30.5" />
+        <g className="doodle-script-writing">
+          <path className="doodle-script-line doodle-script-line-one" pathLength="100" d="M20 40 L43 39" />
+          <path className="doodle-script-line doodle-script-line-two" pathLength="100" d="M20 46 L38 45" />
+        </g>
         <g className="doodle-script-pen">
+          {active && <animateMotion
+            begin="0s"
+            dur="1.2s"
+            fill="freeze"
+            calcMode="linear"
+            keyTimes="0;0.42;0.62;1"
+            keyPoints="0;0.354;0.723;1"
+            path="M-19 -7 C-11 -7 0 -8 4 -8 C0 -10 -14 1 -19 -1 L-1 -2"
+          />}
           <path d="M43 36 L55 22 Q58 19 60 22 Q61 24 58 27 L46 41 L40 43 Z" />
           <path d="M43 36 L48 40 M40 43 L39 47 L46 41" />
           <path d="M55 22 L58 25" stroke="#C95B4D" strokeWidth="3" />
