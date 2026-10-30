@@ -938,46 +938,54 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   }
 }
 
-/* Cover FILM icon: original user PNG stays byte-for-byte untouched.
-   Motion is applied to the full image, not to reconstructed SVG strokes. */
+/* Cover film: all four layers read the same untouched user PNG.
+   Clip-path only separates the upper slate, lower clapper, REC lettering and red light.
+   No shape redraw, source-file edits, or synthetic red dot. */
 .cover-film-icon {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
 }
-.cover-film-frame {
+.cover-film-part {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
   pointer-events: none;
   user-select: none;
-  transform-origin: 28% 63%;
 }
-.cover-entry-film .cover-entry-button:hover .cover-film-frame,
-.cover-entry-film .cover-entry-button:focus-visible .cover-film-frame {
-  animation: cover-film-hover .38s ease both;
+.cover-film-lid {
+  z-index: 1;
+  clip-path: polygon(14% 38%, 62% 13%, 73% 32%, 25% 54%, 17% 46%);
+  transform-origin: 24% 51%;
+  transition: transform .62s cubic-bezier(.18,.76,.28,1.08);
 }
-.cover-entry-film .cover-film-icon.is-snapping .cover-film-frame {
-  animation: cover-film-clack .42s cubic-bezier(.22,.78,.24,1.12) both;
+.cover-film-body {
+  z-index: 2;
+  clip-path: polygon(0 50.4%,100% 50.4%,100% 100%,0 100%);
 }
-@keyframes cover-film-hover {
-  0%, 100% { transform: rotate(0deg); }
-  42% { transform: rotate(-3deg) translateY(-2px); }
-  72% { transform: rotate(1.5deg) translateY(-1px); }
+.cover-film-rec {
+  z-index: 3;
+  clip-path: polygon(74% 0,100% 0,100% 40%,74% 40%);
 }
-@keyframes cover-film-clack {
-  0% { transform: rotate(0deg) scale(1); }
-  20% { transform: rotate(-7deg) scale(.985); }
-  45% { transform: rotate(4deg) scale(1.015); }
-  66% { transform: rotate(-2deg); }
-  85% { transform: rotate(1deg); }
-  100% { transform: rotate(0deg) scale(1); }
+.cover-film-led {
+  z-index: 4;
+  clip-path: circle(4% at 71.7% 21%);
+}
+.cover-entry-film .cover-film-icon.is-recording .cover-film-lid {
+  transform: rotate(27deg);
+}
+.cover-entry-film .cover-film-icon.is-recording .cover-film-led {
+  animation: cover-film-rec-blink 1s steps(1, end) infinite;
+}
+@keyframes cover-film-rec-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: .13; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cover-entry-film .cover-entry-button:hover .cover-film-frame,
-  .cover-entry-film .cover-entry-button:focus-visible .cover-film-frame,
-  .cover-entry-film .cover-film-icon.is-snapping .cover-film-frame {
-    animation: none;
-  }
+  .cover-film-lid { transition: none; }
+  .cover-entry-film .cover-film-icon.is-recording .cover-film-led { animation: none; }
 }

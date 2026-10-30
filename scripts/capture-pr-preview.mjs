@@ -46,15 +46,19 @@ try {
     if (await page.locator('.cover-entry-script .doodle-script').count() !== 0) {
       throw Error('Script cover entry must not use a reconstructed SVG in place of the supplied PNG');
     }
-    const coverFilmImage = await page.locator('.cover-entry-film .cover-film-frame').evaluate(img => ({
-      src: img.getAttribute('src'), complete: img.complete,
-      width: img.naturalWidth, height: img.naturalHeight,
-    }));
-    if (coverFilmImage.src !== '/icons/film-clapper-original.png' || !coverFilmImage.complete ||
-        coverFilmImage.width !== 1254 || coverFilmImage.height !== 1254 ||
-        await page.locator('.cover-entry-film .doodle-film').count() !== 0) {
-      throw Error('Film cover entry must use the untouched original 1254x1254 PNG, not redrawn SVG: ' +
-        JSON.stringify(coverFilmImage));
+    const coverFilmImages = await page.locator('.cover-entry-film .cover-film-part').evaluateAll(images =>
+      images.map(img => ({
+        src: img.getAttribute('src'), complete: img.complete,
+        width: img.naturalWidth, height: img.naturalHeight
+      }))
+    );
+    if (coverFilmImages.length !== 4 || coverFilmImages.some(img =>
+      img.src !== '/icons/film-clapper-original.png' || !img.complete ||
+      img.width !== 1254 || img.height !== 1254) ||
+      await page.locator('.cover-entry-film .doodle-film').count() !== 0 ||
+      await page.locator('.cover-entry-film .is-recording').count() !== 0) {
+      throw Error('Film entry must start OPEN, using only layers from the untouched original PNG: ' +
+        JSON.stringify(coverFilmImages));
     }
     await page.screenshot({path:'preview-screenshots/'+device+'-cover-fold.png',fullPage:false,animations:'disabled'});
     if (!coverMetrics.hasCover || coverMetrics.sideRailCount !== 0 || coverMetrics.entryCount !== 4) {
@@ -157,19 +161,35 @@ try {
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-script-page-turn.png',fullPage:false});
         await page.locator('#scripts').waitFor({state:'visible', timeout:4000});
       } else if (section === 'films') {
-        await page.locator('.cover-entry-film .cover-film-icon.is-snapping').waitFor({state:'visible'});
-        const filmMotion = await page.locator('.cover-entry-film .cover-film-frame').evaluate(el => ({
-          count: el.getAnimations().length,
-          name: getComputedStyle(el).animationName,
-          duration: getComputedStyle(el).animationDuration,
-        }));
-        if (filmMotion.count < 1 || filmMotion.name !== 'cover-film-clack' ||
-            filmMotion.duration !== '0.42s') {
-          throw Error('Original film clapper PNG must animate before entering films: ' +
-            JSON.stringify(filmMotion));
+        const filmEntry = page.locator('.cover-entry-film [data-cover-action="films"]');
+        await page.locator('.cover-entry-film .cover-film-icon.is-recording').waitFor({state:'visible'});
+        if (await page.locator('.landing-cover').count() !== 1 ||
+            await filmEntry.getAttribute('aria-pressed') !== 'true' ||
+            !(await filmEntry.getAttribute('aria-label')).includes('再次点击')) {
+          throw Error('First film click must close the slate WITHOUT navigating away');
         }
-        await page.waitForTimeout(180);
-        await page.screenshot({path:'preview-screenshots/'+device+'-cover-film-clack.png',fullPage:false});
+        const lid = page.locator('.cover-entry-film .cover-film-lid');
+        const led = page.locator('.cover-entry-film .cover-film-led');
+        const recording = await led.evaluate(el => ({
+          name: getComputedStyle(el).animationName,
+          iterations: getComputedStyle(el).animationIterationCount
+        }));
+        if (recording.name !== 'cover-film-rec-blink' || recording.iterations !== 'infinite') {
+          throw Error('REC red dot must blink continuously after the slate closes: ' +
+            JSON.stringify(recording));
+        }
+        await page.waitForTimeout(750);
+        const slateAngle = await lid.evaluate(el => getComputedStyle(el).transform);
+        if (slateAngle === 'none' || slateAngle === 'matrix(1, 0, 0, 1, 0, 0)') {
+          throw Error('Only the upper slate should rotate to a persistent CLOSED state');
+        }
+        await page.screenshot({path:'preview-screenshots/'+device+'-cover-film-closed-recording.png',fullPage:false});
+        await page.waitForTimeout(1200);
+        if (await led.evaluate(el => getComputedStyle(el).animationIterationCount) !== 'infinite' ||
+            await page.locator('.landing-cover').count() !== 1) {
+          throw Error('REC must keep blinking after the initial closing animation ends');
+        }
+        await filmEntry.click();
         await page.locator('#films').waitFor({state:'visible', timeout:4000});
       } else {
         await page.locator('#'+section).waitFor({state:'visible'});

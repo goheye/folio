@@ -6,7 +6,6 @@ type PortfolioSection = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 
 const NOTE_WRITING_DURATION_MS = 1700;
 const SCRIPT_PAGE_TURN_DURATION_MS = 1050;
-const FILM_CLAP_DURATION_MS = 420;
 
 const entries: {
   section: PortfolioSection;
@@ -27,7 +26,8 @@ export default function LandingCover({
   onNavigate: (section: PortfolioSection) => void;
 }) {
   const [writingRun, setWritingRun] = useState(0);
-  const [writingSection, setWritingSection] = useState<'scripts' | 'journal' | 'films' | null>(null);
+  const [writingSection, setWritingSection] = useState<'scripts' | 'journal' | null>(null);
+  const [filmRecording, setFilmRecording] = useState(false);
   const writingTimer = useRef<number | null>(null);
 
   useEffect(() => () => {
@@ -35,21 +35,27 @@ export default function LandingCover({
   }, []);
 
   const handleEntryClick = (section: PortfolioSection) => {
+    if (section === 'films') {
+      if (!filmRecording) {
+        // First click closes only the upper slate; stay on the cover to keep REC blinking.
+        setFilmRecording(true);
+      } else {
+        // A second click preserves access to the film section without cutting the animation short.
+        onNavigate('films');
+      }
+      return;
+    }
     if (writingTimer.current !== null) window.clearTimeout(writingTimer.current);
     const writingKind = section === 'journal'
       ? 'journal'
       : section === 'scripts'
         ? 'scripts'
-        : section === 'films'
-          ? 'films'
-          : null;
+        : null;
     const writingDuration = writingKind === 'journal'
       ? NOTE_WRITING_DURATION_MS
       : writingKind === 'scripts'
         ? SCRIPT_PAGE_TURN_DURATION_MS
-        : writingKind === 'films'
-          ? FILM_CLAP_DURATION_MS
-          : null;
+        : null;
     if (writingKind !== null && writingDuration !== null) {
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       setWritingSection(reduceMotion ? null : writingKind);
@@ -77,7 +83,10 @@ export default function LandingCover({
               onClick={() => handleEntryClick(entry.section)}
               disabled={writingSection !== null}
               aria-busy={entry.section === writingSection}
-              aria-label={'进入' + entry.title + '栏目'}
+              aria-pressed={entry.section === 'films' ? filmRecording : undefined}
+              aria-label={entry.section === 'films'
+                ? (filmRecording ? '录制中，再次点击进入影像栏目' : '合上场记板并开始录制')
+                : '进入' + entry.title + '栏目'}
             >
               <span className="cover-icon-pad">
                 {entry.section === 'scripts' ? (
@@ -106,17 +115,20 @@ export default function LandingCover({
                   </span>
                 ) : entry.section === 'films' ? (
                   <span
-                    className={'cover-film-icon' + (writingSection === 'films' ? ' is-snapping' : '')}
+                    className={'cover-film-icon' + (filmRecording ? ' is-recording' : '')}
                     aria-hidden="true"
                   >
-                    <img
-                      className="cover-film-frame"
-                      src="/icons/film-clapper-original.png"
-                      alt=""
-                      width={1254}
-                      height={1254}
-                      draggable={false}
-                    />
+                    {(['lid', 'body', 'rec', 'led'] as const).map((part) => (
+                      <img
+                        key={part}
+                        className={'cover-film-part cover-film-' + part}
+                        src="/icons/film-clapper-original.png"
+                        alt=""
+                        width={1254}
+                        height={1254}
+                        draggable={false}
+                      />
+                    ))}
                   </span>
                 ) : (
                   <Doodle
@@ -129,7 +141,9 @@ export default function LandingCover({
               </span>
               <span className="cover-entry-caption">
                 <strong>{entry.title}</strong>
-                <small>{entry.english}</small>
+                <small aria-live={entry.section === 'films' ? 'polite' : undefined}>
+                  {entry.section === 'films' && filmRecording ? '再次点击进入影像' : entry.english}
+                </small>
                 <ArrowUpRight className="cover-entry-arrow" size={17} aria-hidden="true" />
               </span>
             </button>
