@@ -677,10 +677,10 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   z-index: 2;
   width: 210px;
 }
-.cover-entry-script { top: 6%; left: 4%; }
-.cover-entry-profile { top: 7%; right: 4%; }
-.cover-entry-film { bottom: 6%; left: 5%; }
-.cover-entry-journal { right: 5%; bottom: 6%; }
+.cover-entry-script { top: 5%; left: 6%; }
+.cover-entry-profile { top: 10%; right: 6%; }
+.cover-entry-film { bottom: 9%; left: 7%; }
+.cover-entry-journal { right: 7%; bottom: 5%; }
 .cover-entry-button {
   display: flex;
   width: 100%;
@@ -704,9 +704,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s ease, border-radius .25s ease;
 }
 .cover-entry-script .cover-icon-pad { background: #EAF0F2; transform: rotate(-4deg); }
-.cover-entry-profile .cover-icon-pad { background: #F0EEE7; transform: rotate(3deg); }
-.cover-entry-film .cover-icon-pad { background: #EDF0E8; transform: rotate(3deg); }
-.cover-entry-journal .cover-icon-pad { background: #F3EAE8; transform: rotate(-3deg); }
+.cover-entry-profile .cover-icon-pad { width: 150px; height: 150px; background: #F0EEE7; transform: rotate(3deg); }
+.cover-entry-film .cover-icon-pad { width: 176px; height: 176px; background: #EDF0E8; transform: rotate(3deg); }
+.cover-entry-journal .cover-icon-pad { width: 162px; height: 162px; background: #F3EAE8; transform: rotate(-3deg); }
 .cover-entry-button:hover .cover-icon-pad,
 .cover-entry-button:focus-visible .cover-icon-pad {
   transform: translateY(-5px) rotate(0);
@@ -716,11 +716,13 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 .cover-entry-button:active .cover-icon-pad { transform: translateY(-1px) scale(.97); }
 .cover-entry-button .doodle-svg { width: 126px; height: 126px; color: #171A18; }
 .cover-entry-caption {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  min-height: 24px;
+  gap: 2px;
+  min-height: 40px;
 }
 .cover-entry-caption strong {
   color: var(--ink);
@@ -736,15 +738,19 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   letter-spacing: .16em;
 }
 .cover-entry-arrow {
+  position: absolute;
+  top: 50%;
+  right: -23px;
   flex: none;
   margin-left: 1px;
   color: #7A837D;
   opacity: .58;
+  transform: translateY(-50%);
   transition: opacity .2s ease, transform .2s ease;
 }
 .cover-entry-button:hover .cover-entry-arrow,
 .cover-entry-button:focus-visible .cover-entry-arrow {
-  transform: translate(2px,-2px);
+  transform: translate(2px,calc(-50% - 2px));
   opacity: 1;
 }
 .cover-entry-button:focus-visible,
@@ -776,7 +782,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .cover-entry { width: 160px; }
   .cover-icon-pad { width: 126px; height: 126px; }
   .cover-entry-button .doodle-svg { width: 98px; height: 98px; }
-  .cover-entry-caption { flex-wrap: wrap; gap: 5px; }
+  .cover-entry-caption { gap: 4px; }
   .cover-entry-caption strong { font-size: 19px; }
 }
 @media (max-width: 760px) {
@@ -818,7 +824,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .cover-entry-caption { min-height: 21px; gap: 5px; }
   .cover-entry-caption strong { font-size: 17px; }
   .cover-entry-caption small { font-size: 8px; letter-spacing: .12em; }
-  .cover-entry-arrow { width: 14px; height: 14px; }
+  .cover-entry-arrow { right: -14px; width: 14px; height: 14px; }
 }
 @media (max-width: 360px) {
   .landing-cover { padding-inline: 12px; }
