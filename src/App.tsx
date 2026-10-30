@@ -2,6 +2,7 @@ import { useEffect, useState, type MouseEvent } from 'react';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Doodle from './components/Doodle';
 import LandingCover from './components/LandingCover';
+import FeaturedShowcase from './components/FeaturedShowcase';
 
 type SectionId = 'cover' | 'home' | 'scripts' | 'films' | 'journal' | 'about';
 const sections: SectionId[] = ['cover', 'home', 'scripts', 'films', 'journal', 'about'];
@@ -97,69 +98,7 @@ export default function App() {
       </header>
       <div className="surface-stage">
       <main className={activeSection === "home" ? "site-main site-main-home" : "site-main"} id="workspace-main" tabIndex={-1}>
-        {activeSection === "home" && <div className="stage-enter home-screen" key="home">
-        <section className="home-hero section-wrap" aria-labelledby="hero-title">
-          <div className="home-intro">
-            <div className="section-number"><span className="number-line" /> 故事与影像的双重创作</div>
-            <h1 id="hero-title">编织故事，<br /><span>也创造画面。</span></h1>
-            <p className="home-role">编剧创作 <span className="times">×</span> AI 影像制作</p>
-            <p className="home-description">从故事的第一行字，到镜头里的每一帧。<br />让文字与影像，成为两种同样重要的表达。</p>
-            <div className="home-actions">
-              <a className="button button-dark" href="#scripts" onClick={onNavigate('scripts')}>剧本创作 <ArrowUpRight size={16} /></a>
-              <a className="button button-outline" href="#films" onClick={onNavigate('films')}>AI 影像 <ArrowUpRight size={16} /></a>
-            </div>
-            <div className="home-signature"><span className="home-signature-dot" /><span>剧本创作 · 人物塑造 · AI 影像</span></div>
-          </div>
-
-          <div className="home-work-stage" aria-label="两条创作方向">
-            <div className="home-work-heading"><span>两条创作主线</span></div>
-            <div className="home-work-grid">
-              <a className="home-work-card home-script-card" href="#scripts" onClick={onNavigate('scripts')}>
-                <div className="home-card-visual home-script-visual">
-                  <span className="home-work-index">01 / 剧本</span>
-                  <div className="home-script-sheet" aria-hidden="true">
-                    <span className="home-script-label">剧本节选 · 版式示意</span>
-                    <strong>人物 · 情节 · 冲突</strong>
-                    <span className="home-script-rule" />
-                    <span className="home-script-rule short" />
-                    <span className="home-script-rule" />
-                    <span className="home-script-rule mid" />
-                    <span className="home-script-rule short" />
-                  </div>
-                  <span className="home-script-doodle"><Doodle kind="book" size={42} /></span>
-                </div>
-                <div className="home-card-meta">
-                  <span className="home-card-copy"><strong>剧本创作</strong><small>故事 · 人物 · 世界观</small></span>
-                  <ArrowUpRight className="home-card-arrow" size={19} />
-                </div>
-              </a>
-
-              <div className="home-work-card home-film-card">
-                <a className="home-work-card-link" href="#films" onClick={onNavigate('films')}>
-                  <div className="home-card-visual home-film-visual">
-                    <span className="home-work-index">02 / 影像</span>
-                    <div className="home-film-layout" aria-hidden="true">
-                      <span className="home-film-number">镜头</span>
-                      <div className="home-film-strip">
-                        <span className="home-film-frame frame-one"><i /></span>
-                        <span className="home-film-frame frame-two"><i /></span>
-                        <span className="home-film-frame frame-three"><i /></span>
-                      </div>
-                      <span className="home-film-caption">角色 · 场景 · 镜头语言</span>
-                    </div>
-                    <span className="home-art-note">分镜排版示意</span>
-                  </div>
-                  <div className="home-card-meta">
-                      <span className="home-card-copy"><strong>AI 影像</strong><small>角色 · 场景 · 镜头语言</small></span>
-                    <ArrowUpRight className="home-card-arrow" size={19} />
-                  </div>
-                </a>
-                <span className="home-film-doodle"><Doodle kind="film" size={39} interactive /></span>
-              </div>
-            </div>
-          </div>
-        </section>
-        </div>}
+        {activeSection === "home" && <div className="stage-enter home-screen" key="home"><FeaturedShowcase onNavigate={navigate} /></div>}
         {activeSection === 'scripts' && <div className="stage-enter" key="scripts">
         <section className="detail-section section-wrap" id="scripts">
           <SectionHeading eyebrow="01 / 剧本创作" title="剧本，写下故事的可能。" description="故事梗概、人物关系与精选节选，会以适合阅读的方式呈现。完整剧本不在公开网站提供。" />

@@ -110,13 +110,14 @@ try {
     const homeMetrics = await page.evaluate(() => ({
       scrollHeight: document.documentElement.scrollHeight,
       viewportHeight: window.innerHeight,
-      workCards: document.querySelectorAll('.home-work-card').length,
-      legacyHomeSections: document.querySelectorAll('.gateway, .featured').length,
+      showcase: document.querySelectorAll('.showcase-home').length,
+      hasScriptPanel: Boolean(document.querySelector('[data-showcase-panel="script"]')),
+      legacyHomeCards: document.querySelectorAll('.home-work-card, .gateway, .featured').length,
       horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
     }));
     console.log(device + ' home metrics:', JSON.stringify(homeMetrics));
     await page.screenshot({path:'preview-screenshots/'+device+'-home-fold.png',fullPage:false,animations:'disabled'});
-    if (homeMetrics.workCards !== 2 || homeMetrics.legacyHomeSections !== 0) throw Error('Home must present two creative tracks without the stacked poster sections');
+    if (homeMetrics.showcase !== 1 || !homeMetrics.hasScriptPanel || homeMetrics.legacyHomeCards !== 0) throw Error('Home must show one representative-work showcase, not duplicate category cards');
     if (device === 'desktop' && homeMetrics.scrollHeight > homeMetrics.viewportHeight + 2) {
       throw Error('Desktop home should fit the viewport without forced vertical scrolling: ' + JSON.stringify(homeMetrics));
     }
@@ -133,10 +134,25 @@ try {
     console.log(device + ' content surface:', JSON.stringify(surfaceStyle));
     if (parseFloat(surfaceStyle.borderWidth) > 0 || parseFloat(surfaceStyle.radius) > 0) throw Error('Unwanted large frame still wraps the home content');
     if (surfaceStyle.overflowY === 'hidden') throw Error('Home content is clipped by a fixed-height container');
-    const clapper = page.locator('.home-film-doodle .doodle-trigger');
-    await clapper.click();
-    const snapAnimations = await page.locator('.home-film-doodle .doodle-film-clapper').evaluate(el => el.getAnimations().length);
-    if (snapAnimations < 1) throw Error('Clapperboard SVG click animation did not start');
+    const scriptToggle = page.locator('[data-showcase-view="script"]');
+    const filmToggle = page.locator('[data-showcase-view="film"]');
+    if (await scriptToggle.getAttribute('aria-pressed') !== 'true' || await filmToggle.getAttribute('aria-pressed') !== 'false') {
+      throw Error('Homepage showcase must initially present screenplay view');
+    }
+    await filmToggle.click();
+    await page.locator('[data-showcase-panel="film"]').waitFor({state:'visible'});
+    if (await filmToggle.getAttribute('aria-pressed') !== 'true' || await scriptToggle.getAttribute('aria-pressed') !== 'false' ||
+        (await page.locator('.showcase-explore').innerText()).trim() !== '浏览影像作品' ||
+        await page.locator('[data-showcase-panel="script"]').count() !== 0) {
+      throw Error('Film switch must change the showcased perspective and detail link');
+    }
+    await page.screenshot({path:'preview-screenshots/'+device+'-home-film-view.png',fullPage:false,animations:'disabled'});
+    await scriptToggle.click();
+    await page.locator('[data-showcase-panel="script"]').waitFor({state:'visible'});
+    if (await scriptToggle.getAttribute('aria-pressed') !== 'true' ||
+        (await page.locator('.showcase-explore').innerText()).trim() !== '浏览剧本作品') {
+      throw Error('Returning to screenplay perspective must restore default view');
+    }
     await page.screenshot({path:'preview-screenshots/'+device+'-home.png',fullPage:true,animations:'disabled'});
     for (const section of ['scripts','films','journal','about']) {
       await page.locator('.rail-nav a[href="#'+section+'"]').click();
