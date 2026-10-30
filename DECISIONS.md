@@ -213,3 +213,15 @@
 - 当前 ChatGPT 会话可查看用户发送的 PNG 预览，但尝试从 Project/Library 取出该图片原始字节用于 GitHub 提交失败（文件工具提示无可授权的原始字节物化路径）。**这不等于原 PNG 已经入库**。不能将截图、风格参考、再生图或重绘 SVG 宣称为原图。
 - 正确实施需取得这张 PNG 的原始文件字节，在设计分支添加原图文件，并仅为其添加展示层动画，不处理原图像素；完成后验证构建、交互、桌面/手机和预览部署。
 - 在原图可用前，不推送指向不存在的图片文件的生产 UI 变更；`main` 不修改，PR #1 继续 Draft。
+
+
+### D18 实施与验证补记（2026-10-31）
+
+**状态：已在设计分支完成，并通过自动化验收；尚未合并生产。** 上文“原始字节暂不可物化”的阻碍已解决，属于当时的历史状态，现不再成立。
+
+- 用户本轮提供的场记板 PNG 不经重绘或重新编码，直接写入 `public/icons/film-clapper-original.png`。1254×1254，713515 字节，源文件 SHA-256 `8a601c7718fae3f57b68b32c551a4113baf68c5d587290139df1b6bcb2451412`，Git blob `c208cba0be4bff881a499dcde5a1d3b520d00793`，与上传源文件逐字节一致。
+- `src/components/LandingCover.tsx` 仅替换封面「影像」入口为该 PNG，并在点击后延时 420ms 进入影片栏目；`src/styles/globals.css` 只对完整 PNG 做 hover 轻摆与点击短促回弹，**没有分拆或重绘场记板上盖，不能称为原 SVG 内部铰链开合**。兼容 reduced-motion。
+- 保留封面剧本两张原 PNG 翻页、关于与手记图标、封面布局、内页导航和原有栏目切换。
+- 实现提交：[6d01d59](https://github.com/goheye/folio/commit/6d01d59320b8e1904af9668d06154c6b06a5b162)；专项 Playwright 回归：[90f66f1](https://github.com/goheye/folio/commit/90f66f15aa75a314cebb2bc38f13862e526ed255)。
+- `90f66f1` 的 GitHub Actions：lint、build、桌面/手机 Playwright（原 PNG 加载、影片点击动画 0.42s、四栏目切换、原有剧本及手记动画）均成功，见 [视觉验收](https://github.com/goheye/folio/actions/runs/41094545488)；[Cloudflare 独立预览部署](https://github.com/goheye/folio/actions/runs/41094545489) 成功。预览地址：`https://folio-preview-c.3303147509.workers.dev/`。
+- 生产 `main` 不修改；PR #1 继续 Draft，待用户亲自体验预览再决定是否合并。
