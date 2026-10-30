@@ -37,7 +37,7 @@ export default function Doodle({
       }
       width={size}
       height={size}
-      viewBox={kind === 'note' || kind === 'script' ? '0 0 240 240' : '0 0 62 62'}
+      viewBox={kind === 'note' ? '0 0 240 240' : '0 0 62 62'}
       aria-hidden="true"
       fill="none"
       stroke="currentColor"
@@ -54,51 +54,29 @@ export default function Doodle({
         <path d="M14 33 L12.5 34 M47 32.5 L48.5 33.5 M17 44 L24 44 M37 43.5 L44 43.2" strokeWidth="2.5" />
       </>}
       {kind === 'script' && <>
-        <defs>
-          <filter id={filterId} x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" seed="13" result="grain" />
-            <feDisplacementMap in="SourceGraphic" in2="grain" scale="1.15" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-        <g className="doodle-script-book" filter={'url(#' + filterId + ')'} strokeWidth="8">
-          <path d="M57 53 L171 29 Q182 27 188 39 L198 53 L78 82 Z" fill="#fff" />
-          <path d="M57 53 L78 82 L80 211 L61 202 Q53 198 52 186 L41 87 Q40 71 57 53 Z" fill="#fff" />
-          <path d="M53 80 L76 86 L80 204 L61 195 Q55 190 54 180 L45 94 Q44 84 53 80 Z" fill="currentColor" stroke="currentColor" />
-          <path d="M49 103 Q58 112 74 115 M52 176 Q62 185 78 189" fill="none" stroke="#fff" strokeWidth="6" />
-          <path d="M78 82 L198 53 L199 178 Q199 188 188 192 L80 213 Q69 215 66 204 L55 91 Q53 84 78 82 Z" fill="#fff" />
-          <path d="M57 53 L171 29 Q182 27 188 39 L198 53 L78 82 Z" fill="#fff" />
+        <path d="M15 8.5 Q14 7 18 6.5 L43 5.5 L54 17 L54 50 Q54 54 50 54 L16 56 Q11 56 11 51 L10 13 Q10 9 15 8.5 Z" />
+        <path d="M43 6 L43 16 Q43 19 47 18.5 L54 17" />
+        <path d="M23 24 L23.5 24.5 M36 23 L36.5 23.5" strokeWidth="4.8" />
+        <path d="M23 31 Q29.5 35 36 30.5" />
+        <g className="doodle-script-writing">
+          <path className="doodle-script-line doodle-script-line-one" pathLength="100" d="M20 40 L43 39" />
+          <path className="doodle-script-line doodle-script-line-two" pathLength="100" d="M20 46 L38 45" />
         </g>
-        <g className="doodle-script-face" strokeWidth="9">
-          <path d="M111 113 L112 128 M153 105 L154 120" />
-          <path d="M127 141 L139 134" strokeWidth="8" />
+        <g className="doodle-script-pen">
+          {active && <animateMotion
+            begin="0s"
+            dur="1.2s"
+            fill="freeze"
+            calcMode="linear"
+            keyTimes="0;0.42;0.62;1"
+            keyPoints="0;0.354;0.723;1"
+            path="M-19 -7 C-11 -7 0 -8 4 -8 C0 -10 -14 1 -19 -1 L-1 -2"
+          />}
+          <path d="M43 36 L55 22 Q58 19 60 22 Q61 24 58 27 L46 41 L40 43 Z" />
+          <path d="M43 36 L48 40 M40 43 L39 47 L46 41" />
+          <path d="M55 22 L58 25" stroke="#C95B4D" strokeWidth="3" />
         </g>
-        {active && <>
-          <g className="doodle-script-writing" strokeWidth="7.5">
-            <path className="doodle-script-line doodle-script-line-one" pathLength="100" d="M91 164 Q118 160 148 153" />
-            <path className="doodle-script-line doodle-script-line-two" pathLength="100" d="M96 182 Q119 178 144 173" />
-          </g>
-          <g
-            className="doodle-script-pen"
-            strokeWidth="5.5"
-            filter={'url(#' + filterId + ')'}
-          >
-            <animateMotion
-              begin="0s"
-              dur="1.2s"
-              fill="freeze"
-              calcMode="linear"
-              keyTimes="0;0.42;0.62;1"
-              keyPoints="0;0.354;0.723;1"
-              path="M91 142 L148 132 C132 133 112 151 96 160 L144 151"
-            />
-            <path d="M0 22 L8 8 L40 -28 Q43 -31 47 -28 L54 -22 Q57 -19 53 -15 L16 17 L4 25 Q0 26 0 22 Z" fill="#fff" />
-            <path d="M8 8 L16 17 M40 -28 L47 -20 M4 25 L16 17" fill="none" />
-            <path d="M44 -25 L54 -35" stroke="#C95B4D" strokeWidth="7" />
-          </g>
-        </>}
-        <g className="doodle-script-accents" strokeWidth="5.5">
-          <path d="M205 28 L210 16 M219 42 L230 36" stroke="#C95B4D" />
-        </g>
+        <path d="M5 14 L7 11 M5 22 L8 21" stroke="#C95B4D" strokeWidth="2.8" />
       </>}
       {kind === 'film' && <>
         <g className="doodle-film-clapper">
