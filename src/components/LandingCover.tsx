@@ -5,6 +5,7 @@ import Doodle, { type DoodleKind } from './Doodle';
 type PortfolioSection = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 
 const NOTE_WRITING_DURATION_MS = 1700;
+const SCRIPT_WRITING_DURATION_MS = 1200;
 
 const entries: {
   section: PortfolioSection;
@@ -25,7 +26,7 @@ export default function LandingCover({
   onNavigate: (section: PortfolioSection) => void;
 }) {
   const [writingRun, setWritingRun] = useState(0);
-  const [writingActive, setWritingActive] = useState(false);
+  const [writingSection, setWritingSection] = useState<'scripts' | 'journal' | null>(null);
   const writingTimer = useRef<number | null>(null);
 
   useEffect(() => () => {
@@ -34,18 +35,28 @@ export default function LandingCover({
 
   const handleEntryClick = (section: PortfolioSection) => {
     if (writingTimer.current !== null) window.clearTimeout(writingTimer.current);
-    if (section === 'journal') {
+    const writingKind = section === 'journal'
+      ? 'journal'
+      : section === 'scripts'
+        ? 'scripts'
+        : null;
+    const writingDuration = writingKind === 'journal'
+      ? NOTE_WRITING_DURATION_MS
+      : writingKind === 'scripts'
+        ? SCRIPT_WRITING_DURATION_MS
+        : null;
+    if (writingKind !== null && writingDuration !== null) {
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      setWritingActive(!reduceMotion);
+      setWritingSection(reduceMotion ? null : writingKind);
       setWritingRun((run) => run + 1);
       writingTimer.current = window.setTimeout(() => {
-        setWritingActive(false);
+        setWritingSection(null);
         writingTimer.current = null;
-        onNavigate('journal');
-      }, reduceMotion ? 0 : NOTE_WRITING_DURATION_MS);
+        onNavigate(section);
+      }, reduceMotion ? 0 : writingDuration);
       return;
     }
-    setWritingActive(false);
+    setWritingSection(null);
     onNavigate(section);
   };
 
@@ -59,15 +70,15 @@ export default function LandingCover({
               type="button"
               data-cover-action={entry.section}
               onClick={() => handleEntryClick(entry.section)}
-              disabled={writingActive}
-              aria-busy={entry.section === 'journal' && writingActive}
+              disabled={writingSection !== null}
+              aria-busy={entry.section === writingSection}
               aria-label={'进入' + entry.title + '栏目'}
             >
               <span className="cover-icon-pad">
                 <Doodle
                   kind={entry.kind}
                   size={104}
-                  active={entry.section === 'journal' && writingActive}
+                  active={entry.section === writingSection}
                   animationKey={writingRun}
                 />
               </span>
@@ -94,7 +105,7 @@ export default function LandingCover({
             className="cover-enter"
             type="button"
             data-cover-action="home"
-            disabled={writingActive}
+            disabled={writingSection !== null}
             onClick={() => onNavigate('home')}
           >
             进入作品集 <ArrowRight size={18} aria-hidden="true" />
