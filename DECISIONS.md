@@ -239,3 +239,17 @@
 - 只更改 `src/components/LandingCover.tsx`、`src/styles/globals.css` 和桌面／手机 Playwright 回归测试；剧本翻页、手记书写、关于及内页不调整。
 
 **验证与发布边界：** [动画修正提交](https://github.com/goheye/folio/commit/4a71ba385e80417d212d4c91ca94f04bd49df758)。[GitHub Actions lint/build + 桌面手机交互测试](https://github.com/goheye/folio/actions/runs/41096063359) 成功；[Cloudflare 独立预览部署](https://github.com/goheye/folio/actions/runs/41096063434) 成功。截图包含合板后录制状态。预览：https://folio-preview-c.3303147509.workers.dev/ 。仅设计分支 `design/c-modern-first-pass` 和 Draft PR #1，正式 `main` 未修改。
+
+
+## D20：合板贴合与红点闪烁后自动跳转（2026-10-31）
+
+**用户已确认：**
+- D19 的“上拍板合下去、红点闪烁”的整体表现可以保留，但**上拍板没有完全贴合下拍板**，合板落点需要进一步修正。
+- 红点应在合板后闪烁，并自动进入对应的**影像栏目页面**，不应要求再次点击。
+
+**本轮实施（待用户亲自体验确认）：**
+- 保留已确认的原始 `film-clapper-original.png` 完全不变，CSS 精调上盖最终姿态：`translate(2%, 10%) rotate(27deg)`，并将上盖置于下方条纹板前层，避免上、下两道条纹错位、叠成两层。
+- 一次点击启动合板（约 0.62s），之后红点以 0.6s 周期持续闪烁，播放约三轮；整个序列 2.45 秒后**自动**进入 `films` 栏目。显示“正在录制…”而非“再次点击进入影像”。
+- 动画期间临时禁用其他入口，防止重复点击；`prefers-reduced-motion` 直接进入影像栏目。不修改剧本、手记、关于等图标和内页。
+- 验收脚本改为检查一键自动跳转、上盖覆盖下盖、红点延时闪烁、桌面／手机回归。
+- 实施仅在 `design/c-modern-first-pass` 和 Draft PR #1，生产 `main` 保持不变。代码与部署结果以本次 GitHub Actions 为准。

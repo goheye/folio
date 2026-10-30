@@ -6,6 +6,7 @@ type PortfolioSection = 'home' | 'scripts' | 'films' | 'journal' | 'about';
 
 const NOTE_WRITING_DURATION_MS = 1700;
 const SCRIPT_PAGE_TURN_DURATION_MS = 1050;
+const FILM_SEQUENCE_DURATION_MS = 2450;
 
 const entries: {
   section: PortfolioSection;
@@ -36,13 +37,18 @@ export default function LandingCover({
 
   const handleEntryClick = (section: PortfolioSection) => {
     if (section === 'films') {
-      if (!filmRecording) {
-        // First click closes only the upper slate; stay on the cover to keep REC blinking.
-        setFilmRecording(true);
-      } else {
-        // A second click preserves access to the film section without cutting the animation short.
+      if (filmRecording) return;
+      if (writingTimer.current !== null) window.clearTimeout(writingTimer.current);
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         onNavigate('films');
+        return;
       }
+      // One click: close the upper slate, blink REC several times, then enter films.
+      setFilmRecording(true);
+      writingTimer.current = window.setTimeout(() => {
+        writingTimer.current = null;
+        onNavigate('films');
+      }, FILM_SEQUENCE_DURATION_MS);
       return;
     }
     if (writingTimer.current !== null) window.clearTimeout(writingTimer.current);
@@ -81,11 +87,10 @@ export default function LandingCover({
               type="button"
               data-cover-action={entry.section}
               onClick={() => handleEntryClick(entry.section)}
-              disabled={writingSection !== null}
-              aria-busy={entry.section === writingSection}
-              aria-pressed={entry.section === 'films' ? filmRecording : undefined}
+              disabled={writingSection !== null || filmRecording}
+              aria-busy={entry.section === writingSection || (entry.section === 'films' && filmRecording)}
               aria-label={entry.section === 'films'
-                ? (filmRecording ? '录制中，再次点击进入影像栏目' : '合上场记板并开始录制')
+                ? (filmRecording ? '场记板已合上，录制提示闪烁后将自动进入影像栏目' : '合上场记板并进入影像栏目')
                 : '进入' + entry.title + '栏目'}
             >
               <span className="cover-icon-pad">
@@ -142,7 +147,7 @@ export default function LandingCover({
               <span className="cover-entry-caption">
                 <strong>{entry.title}</strong>
                 <small aria-live={entry.section === 'films' ? 'polite' : undefined}>
-                  {entry.section === 'films' && filmRecording ? '再次点击进入影像' : entry.english}
+                  {entry.section === 'films' && filmRecording ? '正在录制…' : entry.english}
                 </small>
                 <ArrowUpRight className="cover-entry-arrow" size={17} aria-hidden="true" />
               </span>
@@ -164,7 +169,7 @@ export default function LandingCover({
             className="cover-enter"
             type="button"
             data-cover-action="home"
-            disabled={writingSection !== null}
+            disabled={writingSection !== null || filmRecording}
             onClick={() => onNavigate('home')}
           >
             进入作品集 <ArrowRight size={18} aria-hidden="true" />

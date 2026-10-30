@@ -162,34 +162,45 @@ try {
         await page.locator('#scripts').waitFor({state:'visible', timeout:4000});
       } else if (section === 'films') {
         const filmEntry = page.locator('.cover-entry-film [data-cover-action="films"]');
-        await page.locator('.cover-entry-film .cover-film-icon.is-recording').waitFor({state:'visible'});
-        if (await page.locator('.landing-cover').count() !== 1 ||
-            await filmEntry.getAttribute('aria-pressed') !== 'true' ||
-            !(await filmEntry.getAttribute('aria-label')).includes('再次点击')) {
-          throw Error('First film click must close the slate WITHOUT navigating away');
-        }
         const lid = page.locator('.cover-entry-film .cover-film-lid');
         const led = page.locator('.cover-entry-film .cover-film-led');
+        await page.locator('.cover-entry-film .cover-film-icon.is-recording').waitFor({state:'visible'});
+        if (await page.locator('.landing-cover').count() !== 1 ||
+            !(await filmEntry.isDisabled()) ||
+            !(await filmEntry.getAttribute('aria-label')).includes('自动进入')) {
+          throw Error('A single film click must play the slate and REC sequence before navigating');
+        }
         const recording = await led.evaluate(el => ({
           name: getComputedStyle(el).animationName,
-          iterations: getComputedStyle(el).animationIterationCount
+          iterations: getComputedStyle(el).animationIterationCount,
+          delay: getComputedStyle(el).animationDelay
         }));
-        if (recording.name !== 'cover-film-rec-blink' || recording.iterations !== 'infinite') {
-          throw Error('REC red dot must blink continuously after the slate closes: ' +
+        if (recording.name !== 'cover-film-rec-blink' || recording.iterations !== 'infinite' ||
+            recording.delay !== '0.62s') {
+          throw Error('REC red dot must blink repeatedly AFTER the slate closes: ' +
             JSON.stringify(recording));
         }
-        await page.waitForTimeout(750);
-        const slateAngle = await lid.evaluate(el => getComputedStyle(el).transform);
-        if (slateAngle === 'none' || slateAngle === 'matrix(1, 0, 0, 1, 0, 0)') {
-          throw Error('Only the upper slate should rotate to a persistent CLOSED state');
+        await page.waitForTimeout(790);
+        const closedSlate = await lid.evaluate(el => ({
+          transform: getComputedStyle(el).transform,
+          transitionDuration: getComputedStyle(el).transitionDuration,
+          zIndex: Number(getComputedStyle(el).zIndex),
+          bodyZ: Number(getComputedStyle(document.querySelector('.cover-film-body')).zIndex),
+        }));
+        if (closedSlate.transform === 'none' || closedSlate.zIndex <= closedSlate.bodyZ ||
+            closedSlate.transitionDuration !== '0.62s') {
+          throw Error('Upper slate must move fully ON TOP of the lower striped slate: ' +
+            JSON.stringify(closedSlate));
+        }
+        if (await page.locator('.landing-cover').count() !== 1) {
+          throw Error('Film sequence must remain on the cover long enough to see REC blink');
         }
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-film-closed-recording.png',fullPage:false});
-        await page.waitForTimeout(1200);
-        if (await led.evaluate(el => getComputedStyle(el).animationIterationCount) !== 'infinite' ||
-            await page.locator('.landing-cover').count() !== 1) {
-          throw Error('REC must keep blinking after the initial closing animation ends');
+        await page.waitForTimeout(620);
+        if (await page.locator('.landing-cover').count() !== 1) {
+          throw Error('Film sequence must show several REC pulses before auto-navigation');
         }
-        await filmEntry.click();
+        // No second click: the same click navigates after the blinking interval.
         await page.locator('#films').waitFor({state:'visible', timeout:4000});
       } else {
         await page.locator('#'+section).waitFor({state:'visible'});
