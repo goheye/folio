@@ -17,6 +17,32 @@ const navigation = [
   { label: '关于', href: '#about' },
 ];
 
+function RailCoverIcon({ section }: { section: SectionId }) {
+  // Share the exact image sources and SVG used on the cover, without redrawing artwork.
+  if (section === 'scripts') {
+    return <span className="cover-book-icon rail-book-icon" aria-hidden="true">
+      <img className="cover-book-frame cover-book-closed" src="/icons/script-book-closed-original.png" alt="" width={1254} height={1254} draggable={false} />
+      <img className="cover-book-frame cover-book-open" src="/icons/script-book-open-original.png" alt="" width={1254} height={1254} draggable={false} />
+    </span>;
+  }
+  if (section === 'films') {
+    return <span className="cover-film-icon rail-film-icon" aria-hidden="true">
+      {(['lid', 'body', 'rec', 'led'] as const).map((part) =>
+        <img key={part} className={'cover-film-part cover-film-' + part} src="/icons/film-clapper-original.png" alt="" width={1254} height={1254} draggable={false} />
+      )}
+    </span>;
+  }
+  if (section === 'journal') return <Doodle kind="note" size={35} />;
+  if (section === 'about') {
+    return <span className="cover-profile-icon rail-profile-icon" aria-hidden="true">
+      <img className="cover-profile-frame" src="/icons/about-profile-original.png" alt="" width={1254} height={1254} draggable={false} />
+      <img className="cover-profile-eyes" src="/icons/about-eyes-closed-overlay.png" alt="" width={1254} height={1254} draggable={false} />
+    </span>;
+  }
+  // The cover has four artwork entries, so its own return link keeps the home glyph.
+  return <Doodle kind="home" size={29} />;
+}
+
 function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return <div className="section-heading"><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div><p className="section-description">{description}</p></div>;
 }
@@ -56,12 +82,7 @@ export default function App() {
           <nav className="rail-nav" id="primary-nav" aria-label="主要导航">
             {navigation.map(({ label, href }) => {
               const section = href.slice(1) as SectionId;
-              const illustration = section === 'scripts' ? <Doodle kind="book" size={31} /> :
-                section === 'films' ? <Doodle kind="film" size={31} /> :
-                section === 'journal' ? <Doodle kind="note" size={31} /> :
-                section === 'about' ? <Doodle kind="person" size={29} /> :
-                <Doodle kind="home" size={29} />;
-              return <a key={href} href={href} aria-current={activeSection === section ? 'page' : undefined} onClick={onNavigate(section)}><span className="rail-nav-icon">{illustration}</span><span className="rail-nav-label">{label}</span></a>;
+              return <a key={href} href={href} aria-current={activeSection === section ? 'page' : undefined} onClick={onNavigate(section)}><span className="rail-nav-icon"><RailCoverIcon section={section} /></span><span className="rail-nav-label">{label}</span></a>;
             })}
           </nav>
           <div className="rail-end" aria-hidden="true"><span className="rail-end-dot" /> 故事驱动</div>

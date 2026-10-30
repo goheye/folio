@@ -114,8 +114,34 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   background: var(--accent);
   content: "";
 }
-.rail-nav-icon { display: grid; height: 31px; place-items: center; }
+.rail-nav-icon { display: grid; width: 40px; height: 40px; flex: none; place-items: center; }
 .rail-nav-icon svg { display: block; }
+.rail-nav-icon > .rail-book-icon,
+.rail-nav-icon > .rail-film-icon,
+.rail-nav-icon > .rail-profile-icon { width: 100%; height: 100%; }
+.rail-nav a:hover .rail-book-icon .cover-book-closed,
+.rail-nav a:focus-visible .rail-book-icon .cover-book-closed { animation: cover-book-close-to-open 1.05s ease-in-out both; }
+.rail-nav a:hover .rail-book-icon .cover-book-open,
+.rail-nav a:focus-visible .rail-book-icon .cover-book-open { animation: cover-book-unfold 1.05s cubic-bezier(.2,.65,.25,1) both; }
+.rail-nav a:hover .rail-film-icon .cover-film-lid,
+.rail-nav a:focus-visible .rail-film-icon .cover-film-lid { animation: rail-clapper-snap .48s cubic-bezier(.22,.78,.24,1) both; }
+.rail-nav a:hover .rail-profile-icon .cover-profile-eyes,
+.rail-nav a:focus-visible .rail-profile-icon .cover-profile-eyes { animation: cover-profile-double-blink 1.12s ease-in-out both; }
+@keyframes rail-clapper-snap {
+  0%, 100% { transform: none; }
+  42% { transform: translate(2%,10%) rotate(27deg); }
+  66% { transform: translate(1%,5%) rotate(13deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rail-nav a:hover .rail-book-icon .cover-book-closed,
+  .rail-nav a:focus-visible .rail-book-icon .cover-book-closed,
+  .rail-nav a:hover .rail-book-icon .cover-book-open,
+  .rail-nav a:focus-visible .rail-book-icon .cover-book-open,
+  .rail-nav a:hover .rail-film-icon .cover-film-lid,
+  .rail-nav a:focus-visible .rail-film-icon .cover-film-lid,
+  .rail-nav a:hover .rail-profile-icon .cover-profile-eyes,
+  .rail-nav a:focus-visible .rail-profile-icon .cover-profile-eyes { animation: none; }
+}
 .rail-nav-label { font-size: 11px; }
 .rail-end {
   display: flex;
@@ -486,8 +512,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .rail-top, .rail-end { display: none; }
   .rail-nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; margin: 0; }
   .rail-nav a { min-height: 56px; gap: 2px; border-radius: 11px; padding: 4px 1px; transform: none !important; }
-  .rail-nav-icon { height: 27px; }
-  .rail-nav-icon svg { width: 25px; height: 25px; }
+  .rail-nav-icon { width: 34px; height: 34px; }
+  .rail-nav-icon svg { width: 27px; height: 27px; }
   .rail-nav-label { font-size: 9px; }
   .rail-nav a[aria-current="page"]::before { top: auto; bottom: 1px; left: 30%; width: 40%; height: 2px; }
   .site-header { min-height: 55px; margin-bottom: 10px; border-bottom: 0; }
