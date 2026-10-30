@@ -114,11 +114,21 @@ export default function BookCharacterIcon({
               strokeLinecap="round"
             />
 
-            {/* Sleeping face. */}
+            {/* Sleeping face: visible only while the book is closed. */}
             <g className="book-character-sleep-face" fill="none" stroke="#080808" strokeLinecap="round">
               <path d="M132 124 Q148 139 164 123" strokeWidth="8" />
               <path d="M204 106 Q220 121 236 104" strokeWidth="8" />
               <path d="M175 133 L184 130" strokeWidth="6" />
+            </g>
+
+            {/* A brief waking expression appears on the cover as the pages begin to open. */}
+            <g className="book-character-wake-face" stroke="#080808" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M130 126 Q147 108 165 124 Q149 140 130 126 Z" fill="#fff" strokeWidth="5" />
+              <path d="M202 108 Q220 90 238 106 Q222 122 202 108 Z" fill="#fff" strokeWidth="5" />
+              <ellipse cx="148" cy="123" rx="4.5" ry="6.5" fill="#080808" stroke="none" />
+              <ellipse cx="220" cy="105" rx="4.5" ry="6.5" fill="#080808" stroke="none" />
+              <path d="M175 133 L184 130" fill="none" strokeWidth="5" />
+              <path d="M166 148 Q177 154 188 145" fill="none" strokeWidth="5" />
             </g>
 
             {/* Hand-drawn sleep marks. */}
@@ -198,17 +208,6 @@ export default function BookCharacterIcon({
               strokeLinecap="round"
             />
 
-            {/* Awake face: eyes open, with a small nose and smile. */}
-            <g className="book-character-open-face" stroke="#080808" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M111 101 Q125 91 139 101 M181 101 Q195 91 209 101" fill="none" strokeWidth="5.5" />
-              <ellipse cx="126" cy="116" rx="6" ry="8.5" fill="#080808" stroke="none" />
-              <ellipse cx="194" cy="116" rx="6" ry="8.5" fill="#080808" stroke="none" />
-              <circle cx="128" cy="113" r="2" fill="#fff" stroke="none" />
-              <circle cx="196" cy="113" r="2" fill="#fff" stroke="none" />
-              <path d="M155 132 Q160 137 165 132" fill="none" strokeWidth="5" />
-              <path d="M149 147 Q160 156 171 147" fill="none" strokeWidth="5.5" />
-              <path d="M105 129 L99 127 M215 127 L221 125" fill="none" strokeWidth="4.5" />
-            </g>
           </g>
         </g>
       </svg>
