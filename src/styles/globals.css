@@ -842,28 +842,23 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
 }
 
 
-/* Click-to-write motion for the hand-drawn notebook SVG. */
+/* The pen follows each notebook line; the ink reveal uses matching timings. */
 .doodle-note .doodle-note-line {
   stroke-dasharray: 100;
   stroke-dashoffset: 0;
 }
 .doodle-note.is-writing .doodle-note-line-one {
-  animation: note-line-write .27s ease .13s both;
+  animation: note-line-write .34s linear .27s both;
 }
 .doodle-note.is-writing .doodle-note-line-two {
-  animation: note-line-write .27s ease .47s both;
+  animation: note-line-write .30s linear .79s both;
 }
 .doodle-note.is-writing .doodle-note-line-three {
-  animation: note-line-write .27s ease .81s both;
+  animation: note-line-write .34s linear 1.27s both;
 }
 @keyframes note-line-write {
-  from { stroke-dashoffset: 100; opacity: .25; }
+  from { stroke-dashoffset: 100; opacity: .18; }
   to { stroke-dashoffset: 0; opacity: 1; }
-}
-@keyframes note-pages-bob {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  45% { transform: translateY(-2px) rotate(-1deg); }
-  75% { transform: translateY(1px) rotate(.6deg); }
 }
 .cover-entry-journal .cover-entry-button[aria-busy="true"] .cover-icon-pad {
   transform: scale(.985);
