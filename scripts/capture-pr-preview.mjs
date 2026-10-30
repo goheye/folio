@@ -115,7 +115,7 @@ try {
         console.log(device + ' notebook line timings:', JSON.stringify(lineTimings));
         await page.waitForTimeout(960);
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing-middle.png',fullPage:false});
-        await page.waitForTimeout(480);
+        await page.waitForTimeout(220);
         await page.screenshot({path:'preview-screenshots/'+device+'-cover-journal-writing-late.png',fullPage:false});
         await page.locator('#journal').waitFor({state:'visible', timeout:4000});
       } else {
