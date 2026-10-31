@@ -1,0 +1,202 @@
+.book-character-button {
+  position: relative;
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  aspect-ratio: 320 / 260;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.book-character-button:focus-visible {
+  outline: 2px dashed currentColor;
+  outline-offset: 6px;
+  border-radius: 14px;
+}
+
+.book-character-scene {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 320 / 260;
+  overflow: visible;
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+
+.book-character-scene > svg,
+.book-character-scene > div > svg,
+.book-character-page > svg,
+.book-character-cover-front > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.book-character-defs {
+  position: absolute;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.book-character-blocks {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.book-character-block-closed,
+.book-character-block-open,
+.book-character-closed-binding,
+.book-character-pages,
+.book-character-sleep-marks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Keep the original closed thickness, then replace only the page block as the spread opens. */
+.book-character-block-closed {
+  opacity: 1;
+  transition: opacity 120ms ease 350ms;
+}
+
+.book-character-button[data-open='true'] .book-character-block-closed {
+  opacity: 0;
+}
+
+.book-character-block-open {
+  opacity: 0;
+  transition: opacity 120ms ease 350ms;
+}
+
+.book-character-button[data-open='true'] .book-character-block-open {
+  opacity: 1;
+}
+
+.book-character-closed-binding {
+  transition: opacity 220ms ease 180ms;
+}
+
+.book-character-button[data-open='true'] .book-character-closed-binding {
+  opacity: 0;
+}
+
+/* The cover is a single sheet: it turns through its edge and away, never fades or shrinks. */
+.book-character-cover-hinge {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 52%;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: transform 1800ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.book-character-button[data-open='true'] .book-character-cover-hinge {
+  transform: rotateY(-180deg);
+}
+
+.book-character-cover-front {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Pages unfold from the spine after the cover has started turning. */
+.book-character-pages {
+  z-index: 2;
+  transform-style: preserve-3d;
+  clip-path: inset(0 50% 0 50%);
+  transition: clip-path 1600ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 300ms;
+}
+
+.book-character-button[data-open='true'] .book-character-pages {
+  clip-path: inset(0 0 0 0);
+}
+
+.book-character-page {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform 1600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.book-character-page-left {
+  transform-origin: 50% 50%;
+  transform: rotateY(-88deg);
+  transition-delay: 300ms;
+}
+
+.book-character-page-right {
+  transform-origin: 50% 50%;
+  transform: rotateY(88deg);
+  transition-delay: 450ms;
+}
+
+.book-character-button[data-open='true'] .book-character-page-left,
+.book-character-button[data-open='true'] .book-character-page-right {
+  transform: rotateY(0deg);
+}
+
+/* Only the sleep marks fade. The cover itself is hidden by its backface as it turns. */
+.book-character-sleep-marks {
+  z-index: 3;
+  opacity: 1;
+  transform: translate(0, 0);
+  transition: opacity 200ms ease, transform 260ms ease;
+  pointer-events: none;
+}
+
+.book-character-button[data-open='true'] .book-character-sleep-marks {
+  opacity: 0;
+  transform: translate(5px, -7px);
+}
+
+.book-character-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-character-block-closed,
+  .book-character-block-open,
+  .book-character-closed-binding,
+  .book-character-cover-hinge,
+  .book-character-pages,
+  .book-character-page,
+  .book-character-sleep-marks {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}
